@@ -8,6 +8,7 @@ import { RetailerLinks } from "@/components/book/RetailerLinks";
 import { TrackView } from "@/components/book/TrackView";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ArrowLink } from "@/components/ui/ButtonLink";
+import { HonourStamps } from "@/components/ui/HonourStamp";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { books, bookPath, currentEdition, getBook, ordinal } from "@/content/books";
 import { recognitionFor, reviewsFor, seriesReviews } from "@/content/praise";
@@ -199,14 +200,10 @@ export default async function BookPage({ params }: PageProps<"/books/[slug]">) {
               ))}
             </ul>
             {honours.length > 0 && (
-              <ul className="mt-14 flex flex-wrap gap-3">
-                {honours.map((h) => (
-                  <li key={h.id} className="label border border-ink/35 px-4 py-2.5 text-ink-2">
-                    {h.label}
-                    {h.kind === "pick" && h.year ? ` · ${h.year}` : ""}
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-16 border-t border-ink/20 pt-10">
+                <h3 className="label text-ink-2">Honours</h3>
+                <HonourStamps honours={honours} layout="gallery" className="mt-8" />
+              </div>
             )}
           </div>
         </section>

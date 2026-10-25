@@ -92,6 +92,7 @@ export const recognition: Recognition[] = [
     book: "the-treasure-of-drowned-mans-canyon",
     year: "2014–2015",
     status: "verified",
+    stamp: { shape: "seal", ink: "blue", top: "Texas Bluebonnet Award", bottom: "Master List", centre: "2014–15" },
     sources: [
       {
         label: "Texas Library Association, 2014–2015 Texas Bluebonnet Award Master List (archived PDF)",
@@ -107,6 +108,7 @@ export const recognition: Recognition[] = [
     book: "the-treasure-of-drowned-mans-canyon",
     year: "2013–2014",
     status: "verified",
+    stamp: { shape: "ring", ink: "rust", top: "Dorothy Canfield Fisher Award", bottom: "Master List", centre: "2013–14" },
     sources: [
       { label: "Vermont Public Radio, Oct. 8, 2013", url: "https://www.vermontpublic.org/vpr-news/2013-10-08/dorothys-list-the-expeditioners" },
       back("One"),
@@ -119,6 +121,7 @@ export const recognition: Recognition[] = [
     book: "the-treasure-of-drowned-mans-canyon",
     year: "Winter 2012–13",
     status: "single-source",
+    stamp: { shape: "box", ink: "sepia", top: "Indie Next List", bottom: "Winter 2012–13", centre: "Pick" },
     sources: [back("One")],
   },
 ];

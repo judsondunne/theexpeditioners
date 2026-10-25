@@ -88,6 +88,20 @@ export interface Recognition {
   year?: string;
   status: ContentStatus;
   sources: SourceRef[];
+  /**
+   * How the honour is lettered on its ink stamp. Typographic only: these are
+   * site-made stamps, never reproductions of an award's own seal or logo.
+   */
+  stamp: {
+    shape: "seal" | "ring" | "box";
+    ink: "rust" | "blue" | "sepia";
+    /** Lettered around the top of the ring (or across the top of the box). */
+    top: string;
+    /** Lettered around the bottom of the ring (or across the bottom). */
+    bottom: string;
+    /** Large lettering in the centre, e.g. the year. */
+    centre: string;
+  };
 }
 
 export interface ImageAsset {

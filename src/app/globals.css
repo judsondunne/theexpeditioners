@@ -443,7 +443,8 @@ a {
 .review-plate { box-shadow: 0 12px 24px -16px #35202688; }
 .review-plate::before, .review-plate::after { content: ''; position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #b99560; top: 3px; }
 .review-plate::before { left: 3px; }.review-plate::after { right: 3px; }
-.honour-seal { display: inline-grid; place-items: center; width: 2rem; height: 2rem; flex-shrink: 0; border: 1px solid #997542; border-radius: 50%; color: #96703c; font-size: 1.2rem; }
+/* Honours are pressed onto the page like rubber stamps (see components/ui/HonourStamp.tsx). */
+.honour-stamp { mix-blend-mode: multiply; opacity: 0.9; overflow: visible; }
 .hook-story { position: relative; height: 570svh; }
 .hook-stage { position: sticky; top: var(--header-h); height: calc(100svh - var(--header-h)); overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #362128, #15110e 75%); }
 .hook-panel { position: absolute; inset: 0; opacity: var(--visible, 0); visibility: hidden; transition: opacity .45s ease, visibility .45s; }

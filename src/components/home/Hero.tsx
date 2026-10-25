@@ -3,6 +3,7 @@ import { QuoteRotator } from "@/components/home/QuoteRotator";
 import { BuyBook } from "@/components/purchase/BuyBook";
 import { ArrowLink } from "@/components/ui/ButtonLink";
 import { Engraving } from "@/components/ui/Engraving";
+import { HonourStamps } from "@/components/ui/HonourStamp";
 import { Scribble } from "@/components/ui/Scribble";
 import { bookOne } from "@/content/books";
 import { heroQuotes, recognitionFor } from "@/content/praise";
@@ -119,15 +120,7 @@ export function Hero() {
         {/* Praise plate */}
         <div className="hero-praise lg:col-span-3">
           <QuoteRotator quotes={heroQuotes} />
-          {recognition.length > 0 && (
-            <ul className="honours-list mt-5 space-y-3">
-              {recognition.map((r) => (
-                <li key={r.id} className="label leading-relaxed text-ink-2 flex gap-3 items-center">
-                  <span aria-hidden="true" className="honour-seal">✦</span><span>{r.label}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <HonourStamps honours={recognition} layout="list" className="honours-list mt-5" />
         </div>
       </div>
 

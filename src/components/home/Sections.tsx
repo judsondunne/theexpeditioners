@@ -6,6 +6,7 @@ import { RetailerLinks } from "@/components/book/RetailerLinks";
 import { InkStatement } from "@/components/home/InkStatement";
 import { ArrowLink, ButtonLink } from "@/components/ui/ButtonLink";
 import { Engraving } from "@/components/ui/Engraving";
+import { HonourStamps } from "@/components/ui/HonourStamp";
 
 import { bookOne, bookPath, books, ordinal } from "@/content/books";
 import { recognition, review } from "@/content/praise";
@@ -80,14 +81,7 @@ export function RecognitionSection() {
             <h2 id="notices-title" className="mt-4 font-serif text-[clamp(2.2rem,4vw,3.6rem)] font-light leading-[1.04] tracking-[-0.015em]">
               Selected by librarians.<br />Celebrated by critics.
             </h2>
-            <ul className="mt-10 space-y-4">
-              {recognition.map((r) => (
-                <li key={r.id} className="award-card flex items-center justify-between gap-6 p-5 border border-sepia/30 bg-paper">
-                  <span aria-hidden="true" className="honour-seal">✦</span><span className="font-serif text-[1.15rem] leading-snug">{r.label.replace(/,\s*\d{4}.*$/, "")}</span>
-                  <span className="label shrink-0 text-ink-3">{r.year}</span>
-                </li>
-              ))}
-            </ul>
+            <HonourStamps honours={recognition} layout="gallery" className="mt-12" />
             <p className="label mt-4 text-ink-3">All for Book One, The Treasure of Drowned Man&rsquo;s Canyon.</p>
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
