@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("the full original story scrolls through six scenes and reverses its year count", async ({ page }) => {
+test("the refined story preserves scroll choreography with five scenes and a typeset newspaper", async ({ page }) => {
   await page.goto("/");
   const section = page.locator("#the-premise");
-  await expect(section.locator("[data-panel]")).toHaveCount(6);
+  await expect(section.locator("[data-panel]")).toHaveCount(5);
   const opening = section.locator('[data-panel="0"]');
   const year = opening.locator("span.display");
   const scrub = async (progress: number) => {
@@ -13,24 +13,32 @@ test("the full original story scrolls through six scenes and reverses its year c
       window.scrollTo(0, top + distance * phase);
     }, progress);
   };
-  await scrub(.1 * 1.15 / 6.4);
+  await scrub(.1 * 1.35 / 5.85);
   await expect(year).toHaveText("1880");
-  await scrub(.86 * 1.15 / 6.4);
+  await scrub(.86 * 1.35 / 5.85);
   await expect(year).toHaveText("1980");
-  await expect(opening.getByText("failed.", { exact: true })).toHaveCSS("opacity", "1");
+  await expect(opening.locator(".opening-failure")).toHaveCSS("opacity", "1");
   await expect(opening.locator(".h-px.bg-signal")).toHaveCSS("opacity", "0");
   await expect.poll(() => opening.locator("img").evaluateAll(images => images.length === 3 && images.every(image => (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
   await page.screenshot({ path: test.info().outputPath("original-scroll-machines.png") });
-  await scrub((1.15 + 1 + .7 * 1.05) / 6.4);
-  await expect(section.locator('[data-panel="2"]').getByText(/FAZIAN RAINFOREST STOP/)).toBeVisible();
-  await page.screenshot({ path: test.info().outputPath("original-scroll-dispatch.png") });
-  await scrub((1.15 + 1 + 1.05 + .7 * .95) / 6.4);
-  await expect(section.locator('[data-panel="3"]').getByText("Kit,", { exact: true })).toBeVisible();
-  await scrub((1.15 + 1 + 1.05 + .95 + .7) / 6.4);
-  await expect(section.locator('[data-panel="4"] svg path')).toBeVisible();
+  const heading = await opening.getByRole("heading").boundingBox();
+  expect(heading).not.toBeNull();
+  expect(Math.abs(heading!.x + heading!.width / 2 - page.viewportSize()!.width / 2)).toBeLessThan(4);
+  await scrub((1.35 + 1 + .7 * 1.25) / 5.85);
+  const newspaper = section.getByRole("article", { name: "An imagined newspaper from the world of the story" });
+  await expect(newspaper.getByRole("heading", { name: /Alexander West.*Presumed Dead/ })).toBeVisible();
+  await expect(newspaper.getByText("The Realm Gazette", { exact: true })).toBeVisible();
+  const paperBounds = await newspaper.boundingBox();
+  const skipBounds = await section.getByRole("link", { name: "Skip the story" }).boundingBox();
+  expect(paperBounds!.y).toBeGreaterThan(skipBounds!.y + skipBounds!.height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  await expect(section.getByText(/Kit, the brain|M.K., the tinkerer|Zander, the brave|Via telegraph|Wood engraving|Public domain|Scientific American/)).toHaveCount(0);
+  await page.screenshot({ path: test.info().outputPath("newspaper-scene.png") });
+  await scrub((1.35 + 1 + 1.25 + .7) / 5.85);
+  await expect(section.locator('[data-panel="3"] svg path')).toBeVisible();
   await scrub(.98);
-  await expect(section.locator('[data-panel="5"]').getByRole("link", { name: "Find out in Book One" })).toBeVisible();
-  await scrub(.1 * 1.15 / 6.4);
+  await expect(section.locator('[data-panel="4"]').getByRole("link", { name: "Find out in Book One" })).toBeVisible();
+  await scrub(.1 * 1.35 / 5.85);
   await expect(year).toHaveText("1880");
 });
 
@@ -90,12 +98,12 @@ test("the canyon falls back to the usable original map without WebGL", async ({ 
   await expect(ghost).toHaveAttribute("aria-pressed", "true");
 });
 
-test("reduced motion presents every original story beat as readable content", async ({ page }) => {
+test("reduced motion presents all revised story beats as readable content", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   const story = page.locator("#the-premise");
-  await expect(story.locator("ol > li")).toHaveCount(5);
-  for (const text of ["In 1880, the world built its first computers.", "Strange lands turned up", "Alexander West, famed Explorer", "Kit, the brain.", "With government agents on their trail"]){
+  await expect(story.locator("ol > li")).toHaveCount(4);
+  for (const text of ["In 1880, the world built its first computers.", "Strange lands turned up", "A man with a clockwork hand.", "With government agents on their trail"]){
     await expect(story.getByText(new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))).toBeVisible();
   }
   await expect(story.getByRole("link", { name: "Find out in Book One" })).toBeVisible();

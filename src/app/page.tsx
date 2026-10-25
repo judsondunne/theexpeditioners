@@ -23,11 +23,6 @@ export default function HomePage() {
       <HookStory
         bookHref={bookPath(bookOne)}
         cover={{ src: bookOne.cover.src, alt: bookOne.cover.alt }}
-        explorersArt={{
-          src: "/images/art/book1-explorers.webp",
-          alt: "Detail of the Book One cover: four young explorers wading through a canyon river beneath a waterfall.",
-          credit: "From the cover of Book One · Art by Katherine Roy",
-        }}
       />
       <TrilogyShelf entries={shelfEntries()} />
       <SiblingsSection />

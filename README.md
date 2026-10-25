@@ -68,7 +68,7 @@ Then run `npm run test:unit` to check ISBNs, sources and files.
 ## How the special pieces work
 
 - **3D shelf** (`src/components/three/shelf-scene.ts`): real paperback geometry, thickness from page counts, real front and back cover textures, spine artwork drawn at runtime from each cover's edge colours. Lazy-loaded near the viewport, paused off-screen, with an HTML fallback and keyboard tabs. Click or tap to select; hover only enlarges a waiting book.
-- **Scroll story** (`src/components/home/HookStory.tsx`): a pinned stage that writes CSS variables on scroll. The original six scenes: machines, uncharted lands, the telegraph dispatch, the siblings, the canyon trail, and the closing question. Word-by-word narration, a progress rail and scroll-driven artwork; stacked scenes for reduced motion.
+- **Scroll story** (`src/components/home/HookStory.tsx`): a pinned stage that writes CSS variables on scroll. Five scenes: machines, uncharted lands, a typeset newspaper, the canyon trail, and the closing question. The opening is centered with a filled year counter. The original map scan, word-by-word narration, progress rail and scroll-driven artwork remain; stacked scenes support reduced motion.
 - **Map Room** (`src/components/explore/MapRoom.tsx`): a continuous 3D canyon relief, with orbit, camera presets, zoom, and ten selectable locations from Katherine Roy's jacket map. Elevations are an artistic interpretation. The original 2D map remains available, including as a WebGL fallback.
 
 ## Configuration
