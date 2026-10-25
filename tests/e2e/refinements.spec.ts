@@ -1,33 +1,37 @@
 import { expect, test } from "@playwright/test";
 
-test("the opening story scrubs its map, year and machine failure in both directions", async ({ page }) => {
+test("the full original story scrolls through six scenes and reverses its year count", async ({ page }) => {
   await page.goto("/");
-  const opening = page.locator(".hook-machines");
-  const scrub = async (local: number) => {
-    await page.locator("#the-premise").evaluate((section, phase) => {
-      const top = section.getBoundingClientRect().top + window.scrollY;
-      const distance = section.getBoundingClientRect().height - window.innerHeight;
-      window.scrollTo(0, top + distance * phase / 4);
-    }, local);
+  const section = page.locator("#the-premise");
+  await expect(section.locator("[data-panel]")).toHaveCount(6);
+  const opening = section.locator('[data-panel="0"]');
+  const year = opening.locator("span.display");
+  const scrub = async (progress: number) => {
+    await section.evaluate((node, phase) => {
+      const top = node.getBoundingClientRect().top + window.scrollY;
+      const distance = node.getBoundingClientRect().height - window.innerHeight;
+      window.scrollTo(0, top + distance * phase);
+    }, progress);
   };
-  await scrub(.1);
-  await expect(page.locator(".story-counting-machine img")).toBeVisible();
-  await expect(page.locator(".story-year")).toHaveText("1880");
-  await expect.poll(() => opening.evaluate(node => Number(getComputedStyle(node).getPropertyValue("--fail")))).toBe(0);
-  await scrub(.45);
-  await expect.poll(() => page.locator(".story-year").textContent()).not.toBe("1880");
-  await expect.poll(() => opening.evaluate(node => Number(getComputedStyle(node).getPropertyValue("--scan")))).toBeGreaterThan(.9);
-  await scrub(.86);
-  await expect(page.locator(".story-year")).toHaveText("1980");
-  await expect.poll(() => page.locator(".story-failure").evaluate(node => Number(getComputedStyle(node).opacity))).toBe(1);
-  await expect(page.locator(".story-machine-scan")).toHaveCSS("opacity", "0");
-  await expect(opening.getByRole("heading")).toHaveText("In 1880, the worldbuilt its first computers.");
-  await expect(page.locator(".story-failure em")).toHaveText("they failed.");
-  await expect.poll(() => opening.locator(".story-machine-map img").evaluateAll(images => images.length === 2 && images.every(image => (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
-  await page.screenshot({ path: test.info().outputPath("restored-opening-scroll.png") });
-  await scrub(.1);
-  await expect(page.locator(".story-year")).toHaveText("1880");
-  await expect.poll(() => page.locator(".story-failure").evaluate(node => Number(getComputedStyle(node).opacity))).toBe(0);
+  await scrub(.1 * 1.15 / 6.4);
+  await expect(year).toHaveText("1880");
+  await scrub(.86 * 1.15 / 6.4);
+  await expect(year).toHaveText("1980");
+  await expect(opening.getByText("failed.", { exact: true })).toHaveCSS("opacity", "1");
+  await expect(opening.locator(".h-px.bg-signal")).toHaveCSS("opacity", "0");
+  await expect.poll(() => opening.locator("img").evaluateAll(images => images.length === 3 && images.every(image => (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+  await page.screenshot({ path: test.info().outputPath("original-scroll-machines.png") });
+  await scrub((1.15 + 1 + .7 * 1.05) / 6.4);
+  await expect(section.locator('[data-panel="2"]').getByText(/FAZIAN RAINFOREST STOP/)).toBeVisible();
+  await page.screenshot({ path: test.info().outputPath("original-scroll-dispatch.png") });
+  await scrub((1.15 + 1 + 1.05 + .7 * .95) / 6.4);
+  await expect(section.locator('[data-panel="3"]').getByText("Kit,", { exact: true })).toBeVisible();
+  await scrub((1.15 + 1 + 1.05 + .95 + .7) / 6.4);
+  await expect(section.locator('[data-panel="4"] svg path')).toBeVisible();
+  await scrub(.98);
+  await expect(section.locator('[data-panel="5"]').getByRole("link", { name: "Find out in Book One" })).toBeVisible();
+  await scrub(.1 * 1.15 / 6.4);
+  await expect(year).toHaveText("1880");
 });
 
 // These guard the two interaction regressions called out in the design review.
@@ -86,11 +90,13 @@ test("the canyon falls back to the usable original map without WebGL", async ({ 
   await expect(ghost).toHaveAttribute("aria-pressed", "true");
 });
 
-test("reduced motion presents every story beat as readable content", async ({ page }) => {
+test("reduced motion presents every original story beat as readable content", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  for(const heading of ["In 1880", "Their father left", "Three siblings follow", "But what is waiting"]){
-    await expect(page.getByRole("heading", { name: new RegExp(heading) })).toBeVisible();
+  const story = page.locator("#the-premise");
+  await expect(story.locator("ol > li")).toHaveCount(5);
+  for (const text of ["In 1880, the world built its first computers.", "Strange lands turned up", "Alexander West, famed Explorer", "Kit, the brain.", "With government agents on their trail"]){
+    await expect(story.getByText(new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))).toBeVisible();
   }
-  await expect(page.getByText("Meet the Expeditioners", {exact: true})).toHaveCount(0);
+  await expect(story.getByRole("link", { name: "Find out in Book One" })).toBeVisible();
 });

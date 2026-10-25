@@ -4,7 +4,7 @@ import { HookStory } from "@/components/home/HookStory";
 import { EducatorsTeaser, FinalCta, MapRoomTeaser, RecognitionSection, SiblingsSection } from "@/components/home/Sections";
 import { TrilogyShelf } from "@/components/home/TrilogyShelf";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { bookOne } from "@/content/books";
+import { bookOne, bookPath } from "@/content/books";
 import { shelfEntries } from "@/lib/shelf";
 import { pageMetadata } from "@/lib/seo";
 import { personSchema } from "@/lib/schema";
@@ -21,7 +21,13 @@ export default function HomePage() {
     <>
       <Hero />
       <HookStory
+        bookHref={bookPath(bookOne)}
         cover={{ src: bookOne.cover.src, alt: bookOne.cover.alt }}
+        explorersArt={{
+          src: "/images/art/book1-explorers.webp",
+          alt: "Detail of the Book One cover: four young explorers wading through a canyon river beneath a waterfall.",
+          credit: "From the cover of Book One · Art by Katherine Roy",
+        }}
       />
       <TrilogyShelf entries={shelfEntries()} />
       <SiblingsSection />
