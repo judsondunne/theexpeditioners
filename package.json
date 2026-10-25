@@ -1,0 +1,38 @@
+{
+  "name": "expeditioners",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "npm run build && playwright test",
+    "test:unit": "playwright test --project=unit",
+    "test:e2e": "playwright test --project=desktop --project=mobile",
+    "pdfs": "node scripts/build-pdfs.mjs",
+    "art": "python3 -I scripts/art/process_engravings.py assets-src/engravings public/images/engravings && python3 -I scripts/art/process_maps.py assets-src/maps public/images/maps && python3 -I scripts/art/crop_cover_art.py && npm run art:optimize",
+    "check:launch": "node scripts/check-launch.mjs",
+    "art:optimize": "node scripts/optimize-art.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

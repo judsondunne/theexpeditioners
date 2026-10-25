@@ -1,0 +1,16 @@
+assets-src/maps/
+assets-src/covers/
+assets-src/official/
+assets-src/engravings/
+docs/
+tests/
+test-results/
+playwright-report/
+blob-report/
+.next/
+.git/
+.github/
+.claude/
+.vercel/
+.env*
+*.tsbuildinfo
