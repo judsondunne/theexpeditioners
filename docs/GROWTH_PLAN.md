@@ -26,6 +26,8 @@ The site was deployed on 25 October 2026 to [theexpeditioners.vercel.app](https:
 
 The CLI-created project initially used the Other framework preset. `vercel.json` now explicitly selects Next.js. `.vercelignore` retains the fonts and artwork used for generated social cards while excluding local environment files, test output and unused source artwork. Future releases can use `vercel deploy --prod --scope judderbudders-projects` from this checkout, followed by `npm run check:launch -- https://theexpeditioners.vercel.app`.
 
+The source repository is [judsondunne/theexpeditioners](https://github.com/judsondunne/theexpeditioners), connected to the existing Vercel project. Pushes to `main` deploy production; pull requests get preview deployments. GitHub Actions runs lint, the production build and Playwright checks on pushes and pull requests. Local credentials and generated build/test output are excluded from Git.
+
 Remaining growth setup:
 
 1. Verify ownership in Search Console and Bing Webmaster Tools, add the verification tokens if using their HTML-tag method, and submit `/sitemap.xml`. Crawl access alone does not guarantee indexing or rankings.

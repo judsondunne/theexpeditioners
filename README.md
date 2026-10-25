@@ -1,5 +1,7 @@
 # The Expeditioners — official website
 
+[![Site checks](https://github.com/judsondunne/theexpeditioners/actions/workflows/checks.yml/badge.svg)](https://github.com/judsondunne/theexpeditioners/actions/workflows/checks.yml)
+
 The digital home of **The Expeditioners**, the illustrated middle-grade adventure trilogy by S. S. Taylor (Sarah Stewart Taylor), illustrated by Katherine Roy.
 
 Built with Next.js 16 (App Router, fully static), TypeScript, Tailwind CSS 4 and three.js. No database, CMS, login or shop: book content lives in typed files, and purchases go to verified retailers.
