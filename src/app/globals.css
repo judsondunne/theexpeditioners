@@ -616,7 +616,7 @@ a {
 .hero-praise .review-plate { min-height: 13.25rem; }
 .hero-praise .review-plate blockquote p { font-size: clamp(1.25rem,1.55vw,1.5rem); line-height: 1.22; }
 .hero-praise .review-plate > div { min-height: 12.5rem; }
-.award-art--ribbon { width: 3.6rem; height: 4.4rem; mix-blend-mode: normal; }
+.award-art--ribbon { width: 4.2rem; height: 5rem; mix-blend-mode: multiply; }
 .award-ribbon { display: block; height: 100%; width: 100%; }
 .award-art--bluebonnet { color: #38556b; }
 .award-art--dcf { color: #775343; }
