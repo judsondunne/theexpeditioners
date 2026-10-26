@@ -145,4 +145,4 @@ export function review(id: string): ReviewExcerpt {
 }
 
 /** The three quotes that rotate in the homepage hero. */
-export const heroQuotes = [review("sf-chronicle-series"), review("boingboing-book-one"), review("kirkus-book-two")];
+export const heroQuotes = [review("kirkus-book-one"), review("slj-book-one"), { ...review("sf-chronicle-series"), quote: "Beautifully written and nail-bitingly thrilling…" }];

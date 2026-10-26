@@ -55,7 +55,7 @@ League Gothic, Libre Caslon Text, IBM Plex Mono, Reenie Beanie — SIL OFL (News
 
 | Asset | Provenance / use |
 |---|---|
-| `images/brand/expeditioners-lettering.svg` | Vector tracing of the white lettering on `assets-src/covers/book-1-front.jpg`; regenerated with `node scripts/art/trace-lettering.mjs`. Original D, R, N and arched baseline retained. |
+| `images/brand/expeditioners-lettering.svg` | Smooth editable vector curves from the cover lettering, with a separate compact header asset. `node scripts/art/trace-lettering.mjs` validates the maintained masters. The previous pixel-edge generator has been removed. |
 | `images/awards/texas-bluebonnet.jpg` | Texas Library Association: https://txla.org/wp-content/uploads/2022/04/TBA-Logo-RGB.jpg |
 | `images/awards/dorothy-canfield-fisher.jpg` | Historical logo by Hedda Peterson via Thetford Academy Library: https://talibrary.org/the-dcf-award/ |
 | `images/awards/indie-next.png` | American Booksellers Association’s official PNG: https://www.bookweb.org/sites/default/files/diy/INL-RefreshLogo-FINAL.png |
@@ -65,3 +65,9 @@ League Gothic, Libre Caslon Text, IBM Plex Mono, Reenie Beanie — SIL OFL (News
 | `images/art/canyon-framed.webp` | Crop of the existing Thomas Moran public-domain print, excluding the white mount and printed caption. No generated artwork. |
 
 The progress airship is the same existing `airship` engraving used in the homepage icon statement. The generated alternative was rejected and is not included in the site. Portraits use compressed WebP display derivatives. The paperback serif is now Libre Caslon Text (SIL OFL), chosen to approximate the cover’s subtitle and author lettering; the exact original typeface has not been confirmed.
+
+## Cover shelves and identity refinement
+
+The About page uses 25 covers across eight collections. Twenty additional WebP files in `public/images/bibliography/` come from the creators’ official websites and Macmillan’s cover service. Exact image URLs are recorded in `assets-src/official/bibliography-sources.json`. The Sweeney St. George covers were checked visually against their titles, rather than inferred from page image order. Katherine Roy’s official book renders are retained. The existing Expeditioners cover assets are reused.
+
+The homepage hero uses decorative vector award ribbons. The lower recognition gallery retains the official award marks at the user’s request. Both logo assets use smooth curves and one SVG viewBox. The footer now includes nine drawings from the existing Pearson Scott Foresman engraving collection. The progress airship points vertically downward.

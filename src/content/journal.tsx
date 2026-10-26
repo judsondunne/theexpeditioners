@@ -41,7 +41,7 @@ export const articles: Article[] = [
       <p>The machines support the mystery. Kit, M.K. and Zander are following clues left by their father. They have a map, people chasing them, and a canyon to reach. You do not need to know how a steam engine works to follow the adventure.</p>
       <h2>Steampunk is not the same as historical fiction</h2>
       <p>A historical novel sets its story in a recognizable past. A steampunk story can invent a different past, or a world that resembles one. When you read, ask which details could belong to our history and which have been changed.</p>
-      <p>In The Expeditioners, the early arrival and later failure of computers are part of that invented history. A real map or an old engraving on this site can help create the atmosphere without being a picture of something that actually happened in the story.</p>
+      <p>In The Expeditioners, the early arrival and later failure of computers are part of that alternate history. Steam and clockwork power a world where explorers are still discovering new lands.</p>
       <h2>A what-if challenge for your own story</h2>
       <p>Pick one ordinary object: a bicycle, a school bell, a flashlight. Imagine that it must work without electricity. Draw an invention that could take its place. Label what powers it and what might go wrong.</p>
       <p>Then give the inventor a problem to solve. A marvelous machine becomes more interesting when somebody needs it to work, right now.</p>

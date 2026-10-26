@@ -24,9 +24,6 @@ export default function CreditsPage() { return <>
             </div>
             <div>
               <h3 className="label text-signal">Public-domain engravings &amp; maps</h3>
-              <p className="mt-3 font-serif text-[1.02rem] italic text-cream/65">
-                Used as decoration and atmosphere. They are not illustrations from the books.
-              </p>
               <ul className="mt-4 space-y-2 font-serif text-[1.02rem] leading-relaxed text-cream/85">
                 {Object.values(maps).map((m) => (
                   <li key={m.src}>{m.credit}</li>
@@ -49,7 +46,7 @@ export default function CreditsPage() { return <>
         </div>
       </section>
 <section className="container-x py-16 prose-field"><h2>Portraits and recognition marks</h2>
-<p>Sarah Stewart Taylor’s portrait is from her <a href="https://www.sarahstewarttaylor.com/about">official biography</a>. Katherine Roy’s portrait is by Tim Stout, from her <a href="https://www.katherineroy.com/about">official biography</a>.</p>
-<p>Texas Bluebonnet Award graphic: Texas Library Association. Dorothy Canfield Fisher award logo: Hedda Peterson, reproduced on Thetford Academy Library’s historical award page. Indie Next List graphic: American Booksellers Association. Award dates and selection status accompany each mark.</p>
-<p>The Expeditioners wordmark is a vector tracing of the original series lettering on the Book One paperback cover.</p></section>
+<p>Katherine Roy portrait: Tim Stout.</p>
+<p>Texas Bluebonnet Award graphic: Texas Library Association. Dorothy Canfield Fisher award logo: Hedda Peterson, reproduced on Thetford Academy Library’s historical award page. Indie Next List graphic: American Booksellers Association.</p>
+</section>
 </>; }

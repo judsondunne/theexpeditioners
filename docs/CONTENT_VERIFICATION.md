@@ -42,3 +42,7 @@ See README → *Editing content*. The unit tests (`npm run test:unit`) check ISB
 - Current author-site portraits added, Katherine’s photograph credited to Tim Stout. Image credits now live at `/credits` and are linked in the footer.
 - Instagram: Agent Reach CLI was unavailable; the skill’s OpenCLI Instagram route returned HTTP 401. Public search did not locate usable llama photographs. No llama image has been substituted or invented; these photographs remain outstanding.
 - Generated blimp rejected by the user; the progress rail and footer use existing public-domain icons from the inline statement instead.
+
+## Follow-up design revision
+
+Restored the original icon-statement copy and compact quote plate at the user’s request. Removed public-facing verification/provenance explanations from About, the educators’ themes, the map sidebar, and the steampunk article; research records remain in source and documentation. Portraits use one consistent frame per creator. Bibliographies now live in `src/content/bibliography.ts` with actual covers and creator/publisher links. Instagram llama photographs are intentionally deferred by the user.

@@ -52,18 +52,3 @@ export const illustrator: Person = {
   },
   links: [{ label: "katherineroy.com", url: "https://www.katherineroy.com/" }],
 };
-
-/** Book lists checked against the creators’ official websites and publishers, October 2026. */
-export const authorBibliography = [
-  { title: "The Expeditioners", href: "/books", books: ["The Expeditioners and the Treasure of Drowned Man’s Canyon", "The Expeditioners and the Secret of King Triton’s Lair", "The Expeditioners and the Lost City of Maps"] },
-  { title: "Sweeney St. George", href: "https://www.sarahstewarttaylor.com/sweeney-st-george", books: ["O’ Artful Death", "Mansions of the Dead", "Judgment of the Grave", "Still as Death"] },
-  { title: "Maggie D’Arcy", href: "https://www.sarahstewarttaylor.com/maggie-d-arcy-series", books: ["The Mountains Wild", "A Distant Grave", "The Drowning Sea", "A Stolen Child"] },
-  { title: "Franklin Warren and Alice Bellows", href: "https://www.sarahstewarttaylor.com/", books: ["Agony Hill", "Hunter’s Heart Ridge"] },
-  { title: "Short fiction", href: "https://us.macmillan.com/books/9781250378552/mudseason/", books: ["Mud Season: A Bethany, Vermont Story"] },
-  { title: "Graphic novel", href: "https://www.sarahstewarttaylor.com/other-books", books: ["Amelia Earhart: This Broad Ocean — illustrated by Ben Towle"] },
-];
-
-export const illustratorBibliography = [
-  { title: "Written and illustrated by Katherine Roy", books: ["Neighborhood Sharks: Hunting with the Great Whites of California’s Farallon Islands", "How to Be an Elephant: Growing Up in the African Wild", "Making More: How Life Begins"] },
-  { title: "Illustrated by Katherine Roy", books: ["The Expeditioners and the Treasure of Drowned Man’s Canyon — S. S. Taylor", "The Expeditioners and the Secret of King Triton’s Lair — S. S. Taylor", "Otis and Will Discover the Deep — Barb Rosenstock", "Red Rover — Richard Ho", "The Fire of Stars — Kirsten W. Larson", "Sea Without a Shore — Barb Rosenstock", "Chasing Eruptions — Curtis Manley"] },
-];

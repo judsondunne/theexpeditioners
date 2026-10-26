@@ -103,8 +103,7 @@ export default function EducatorsPage() {
             </table>
           </div>
           <p className="mt-4 text-[0.92rem] italic text-ink-3">
-            Ebook editions of all three books are available to libraries through OverDrive. Lexile measures from TeachingBooks,
-            OverDrive and library catalogues; none is published for Book Three yet.
+            Ebook editions of all three books are available to libraries through OverDrive.
           </p>
         </div>
       </section>
@@ -125,12 +124,7 @@ export default function EducatorsPage() {
                 <div>
                   <h3 className="font-serif text-[1.45rem] leading-snug">{t.title}</h3>
                   <p className="mt-2 font-serif text-[1.08rem] leading-relaxed text-ink-2">{t.text}</p>
-                  {t.source?.url && (
-                    <a href={t.source.url} target="_blank" rel="noopener" className="label mt-3 inline-block text-ink-3 underline-offset-4 hover:underline">
-                      Source: {t.source.label}
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                  )}
+
                 </div>
               </li>
             ))}

@@ -33,6 +33,9 @@ test("the story preserves five scenes, original book art and a moving airship", 
   expect(artBounds!.y).toBeGreaterThan(skipBounds!.y + skipBounds!.height);
   if (page.viewportSize()!.width >= 768) {
     const rail = section.locator(".story-rail-airship");
+    const direction = await rail.evaluate(node => { const matrix = new DOMMatrixReadOnly(getComputedStyle(node).transform); return { a: matrix.a, b: matrix.b }; });
+    expect(Math.abs(direction.a)).toBeLessThan(.01);
+    expect(direction.b).toBeGreaterThan(.99);
     const railY = (await rail.boundingBox())!.y;
     await scrub(.9);
     await expect.poll(async () => (await rail.boundingBox())!.y).toBeGreaterThan(railY + 20);
@@ -127,9 +130,15 @@ test("reduced motion presents all revised story beats as readable content", asyn
 test("the homepage uses original lettering and award graphics, with clean map chrome", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("header .series-wordmark").first()).toBeVisible();
-  const marks = page.locator(".hero-praise .award-art img");
-  await expect(marks).toHaveCount(3);
-  await expect.poll(() => marks.evaluateAll(images => images.every(image => (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+  await expect(page.locator(".hero-praise .award-ribbon")).toHaveCount(3);
+  await expect(page.locator(".hero-praise .award-art img")).toHaveCount(0);
+  await expect(page.locator(".award-gallery .award-art img").first()).toHaveAttribute("src", /texas-bluebonnet/);
+  const quote = await page.locator(".hero-praise .review-plate").boundingBox();
+  expect(quote!.height).toBeLessThan(270);
+  const logo = await page.locator("header .series-wordmark").first().boundingBox();
+  expect(logo!.y).toBeGreaterThanOrEqual(0);
+  expect(logo!.y + logo!.height).toBeLessThanOrEqual(68);
+  await expect(page.locator(".footer-engraving-lineup > span")).toHaveCount(9);
   await expect(page.locator(".canyon-room--compact .canyon-toolbar")).toHaveCount(0);
   await expect(page.locator(".canyon-room--compact .canyon-caption")).toHaveCount(0);
   await expect(page.getByText("Begin at the beginning", { exact: true })).toHaveCount(0);
@@ -150,7 +159,28 @@ test("about contains both biographies and book lists, and credits have their own
   await expect(page.getByRole("heading", { name: "Books by Katherine Roy", exact: true })).toBeVisible();
   await expect(page.getByText(/also known as|One writer, two names|is the name Sarah Stewart Taylor writes under/)).toHaveCount(0);
   await expect(page.locator("#credits")).toHaveCount(0);
+  await expect(page.getByText(/Portrait from|Biography based on|Biography adapted from|Book lists checked against/)).toHaveCount(0);
+  await expect(page.locator(".creator-portrait")).toHaveCount(2);
+  await expect(page.locator(".creator-shelf img")).toHaveCount(25);
+  await expect(page.locator(".creator-collection")).toHaveCount(8);
+  const covers = page.locator(".creator-shelf img");
+  for (const cover of await covers.all()) {
+    await cover.scrollIntoViewIfNeeded();
+    await expect.poll(() => cover.evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  }
   await page.getByRole("navigation", { name: "Footer", exact: true }).getByRole("link", { name: "Image credits" }).click();
   await expect(page).toHaveURL(/\/credits$/);
   await expect(page.getByRole("heading", { name: "Pictures on this site", exact: true })).toBeVisible();
+});
+
+
+test("creator books lift on focus and stay still with reduced motion", async ({ page }) => {
+  await page.goto("/about");
+  const book = page.locator(".creator-book-link").first();
+  await book.scrollIntoViewIfNeeded();
+  const resting = await book.locator(".creator-book").evaluate(node => getComputedStyle(node).transform);
+  await book.focus();
+  await expect.poll(() => book.locator(".creator-book").evaluate(node => getComputedStyle(node).transform)).not.toBe(resting);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(book.locator(".creator-book")).toHaveCSS("transform", "none");
 });

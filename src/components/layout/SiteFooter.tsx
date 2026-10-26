@@ -7,10 +7,15 @@ import type { SpotName } from "@/content/engravings";
 import { site } from "@/content/site";
 
 const lineup: { name: SpotName; w: string }[] = [
-  { name: "compass", w: "w-[3.5rem] sm:w-[4.5rem]" },
-  { name: "gear", w: "w-[4rem] sm:w-[5.5rem]" },
+  { name: "compass", w: "w-[3.2rem] sm:w-[4rem]" },
+  { name: "pocketwatch", w: "w-[2.6rem] sm:w-[3.4rem]" },
+  { name: "gear", w: "w-[3.8rem] sm:w-[5rem]" },
   { name: "airship", w: "w-[6rem] sm:w-[8rem]" },
-  { name: "field-glasses", w: "w-[3.5rem] sm:w-[4.5rem]" },
+  { name: "field-glasses", w: "w-[3.3rem] sm:w-[4.5rem]" },
+  { name: "globe", w: "w-[3rem] sm:w-[3.8rem]" },
+  { name: "canoe", w: "w-[4.5rem] sm:w-[6rem]" },
+  { name: "hourglass", w: "w-[2.5rem] sm:w-[3.2rem]" },
+  { name: "typewriter", w: "w-[3.5rem] sm:w-[4.5rem]" },
 ];
 
 export function SiteFooter() {
@@ -19,7 +24,7 @@ export function SiteFooter() {
     <footer data-site-footer className="paper-grain relative mt-0 bg-paper text-ink">
       {/* the expedition, lined up on the baseline */}
       <div aria-hidden="true" className="container-x relative z-10 overflow-hidden">
-        <div className="flex items-end justify-center gap-[clamp(0.8rem,3.2vw,2.8rem)] pt-16 text-ink/80">
+        <div className="footer-engraving-lineup">
           {lineup.map((f) => (
             <Engraving
               key={f.name}

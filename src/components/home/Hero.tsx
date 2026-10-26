@@ -116,7 +116,7 @@ export function Hero() {
         {/* Praise plate */}
         <div className="hero-praise lg:col-span-3">
           <QuoteRotator quotes={heroQuotes} />
-          <HonourStamps honours={recognition} layout="list" className="honours-list mt-5" />
+          <HonourStamps honours={recognition} layout="list" appearance="ribbon" className="honours-list mt-5" />
         </div>
       </div>
 

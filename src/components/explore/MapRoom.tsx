@@ -78,7 +78,6 @@ export function MapRoom({ compact = false, ...props }: Props) {
           {!compact && <aside className="canyon-index" aria-label="Canyon locations">
             <p className="label text-[#bd9367] mb-5">Ten places to discover</p>
             <ol>{places.map((place,i)=><li key={place.name}><button type="button" disabled={status !== "ready"} aria-label={place.name} aria-pressed={selected === i} onClick={()=>choose(i)}><span className="label">{String(i+1).padStart(2,"0")}</span><span>{place.name}</span><span aria-hidden="true">↗</span></button></li>)}</ol>
-            <p className="mt-6 text-sm leading-relaxed text-cream/50">A relief interpretation of Katherine Roy&rsquo;s map. The heights and terrain are imagined.</p>
           </aside>}
         </div>
       )}

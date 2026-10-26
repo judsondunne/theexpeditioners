@@ -79,7 +79,7 @@ export function SiteHeader({ purchases }: { purchases: PurchaseBook[] }) {
       </a>
       <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-6">
         <Link href="/" className="group flex items-baseline gap-2.5" aria-label="The Expeditioners — home">
-          <Wordmark className="w-[10rem] sm:w-[11rem]" />
+          <Wordmark compact className="w-[10rem] sm:w-[12rem]" />
         </Link>
 
         <nav aria-label="Main" className="hidden lg:block">
