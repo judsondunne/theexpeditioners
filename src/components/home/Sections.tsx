@@ -121,11 +121,8 @@ export function MapRoomTeaser() {
         <div className="lg:col-span-5">
           <p className="label text-cream/60">The Map Room</p>
           <h2 id="maproom-title" className="mt-4 font-serif text-[clamp(2.2rem,4.2vw,3.8rem)] font-light leading-[1.04] tracking-[-0.015em]">
-            Explore Drowned Man&rsquo;s Canyon.
+            Explore Drowned Man&rsquo;s Canyon
           </h2>
-          <p className="mt-6 max-w-md font-serif text-[1.12rem] leading-relaxed text-cream/75">
-            Follow the river past Ghost Falls. Find the peaks on the horizon. Step inside the canyon that started the expedition.
-          </p>
           <div className="mt-9">
             <ButtonLink href="/explore#map-room" variant="paper">
               Explore the canyon

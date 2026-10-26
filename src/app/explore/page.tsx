@@ -39,11 +39,8 @@ export default function ExplorePage() {
           <div className="max-w-3xl">
             <p className="label text-cream/60">The Map Room</p>
             <h2 id="map-title" className="mt-4 font-serif text-[clamp(2rem,3.8vw,3.4rem)] font-light leading-[1.06]">
-              Find your own way through.
+              Explore Drowned Man&rsquo;s Canyon
             </h2>
-            <p className="mt-5 max-w-2xl font-serif text-[1.12rem] leading-relaxed text-cream/75">
-              An illuminated landscape of river cuts, sandstone walls and distant peaks. Turn the terrain, move closer, or choose a place to explore. The original jacket map is here too.
-            </p>
           </div>
           <div id="map-room" className="mt-12">
             <MapRoom
