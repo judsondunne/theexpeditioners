@@ -46,3 +46,5 @@ See README → *Editing content*. The unit tests (`npm run test:unit`) check ISB
 ## Follow-up design revision
 
 Restored the original icon-statement copy and compact quote plate at the user’s request. Removed public-facing verification/provenance explanations from About, the educators’ themes, the map sidebar, and the steampunk article; research records remain in source and documentation. Portraits use one consistent frame per creator. Bibliographies now live in `src/content/bibliography.ts` with actual covers and creator/publisher links. Instagram llama photographs are intentionally deferred by the user.
+
+Book One’s short description now uses the opening sentence of Sarah’s official Expeditioners description (https://www.sarahstewarttaylor.com/expeditioners), replacing the isolated half-map questions. Verified directly on 26 October 2026; the shared content updates all book-hook placements.

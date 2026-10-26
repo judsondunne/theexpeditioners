@@ -45,7 +45,7 @@ export const books: Book[] = [
     title: "The Treasure of Drowned Man's Canyon",
     fullTitle: "The Expeditioners and the Treasure of Drowned Man's Canyon",
     hook: {
-      text: "Why are so many government agents trying to steal the half-map? (And where is the other half?)",
+      text: "Computers have failed, electricity is extinct, and the race to discover new lands is underway!",
       status: "verified",
       source: { label: "S. S. Taylor’s official book description", url: "https://www.sarahstewarttaylor.com/expeditioners" },
     },
