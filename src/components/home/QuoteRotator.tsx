@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReviewExcerpt } from "@/content/types";
 import { cn } from "@/lib/cn";
+import { observeMotionVisibility } from "@/lib/motion";
 
 /**
  * Review quotes in a framed plate, with dash pagination. Auto-advances slowly,
@@ -13,21 +14,29 @@ export function QuoteRotator({ quotes, tone = "paper" }: { quotes: ReviewExcerpt
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const reduce = useRef(false);
+  const figure = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(true);
 
   useEffect(() => {
     reduce.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
   useEffect(() => {
-    if (paused || reduce.current || quotes.length < 2) return;
+    if (!figure.current) return;
+    return observeMotionVisibility(figure.current, setActive);
+  }, []);
+
+  useEffect(() => {
+    if (!active || paused || reduce.current || quotes.length < 2) return;
     const id = window.setTimeout(() => setIndex((i) => (i + 1) % quotes.length), 6500);
     return () => window.clearTimeout(id);
-  }, [index, paused, quotes.length]);
+  }, [active, index, paused, quotes.length]);
 
   const night = tone === "night";
 
   return (
     <figure
+      ref={figure}
       className={cn("review-plate relative border p-1.5", night ? "border-cream/30" : "border-sepia/50 bg-[#352026] text-cream")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -36,7 +45,7 @@ export function QuoteRotator({ quotes, tone = "paper" }: { quotes: ReviewExcerpt
     >
       <div className={cn("border px-5 pb-5 pt-4", night ? "border-cream/20" : "border-cream/25")}>
         <div className="flex items-center justify-between gap-3">
-          <span className="plate-caps text-[0.9rem] opacity-80">Critical acclaim</span>
+          <span aria-hidden="true" />
           <div className="flex items-center gap-1.5" role="group" aria-label="Choose a review">
             {quotes.map((q, i) => (
               <button

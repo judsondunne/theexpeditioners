@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ShelfBook, ShelfHandle } from "@/components/three/shelf-scene";
 import { cn } from "@/lib/cn";
+import { observeMotionVisibility } from "@/lib/motion";
 
 /**
  * A single book in WebGL that the reader can turn over by dragging. Until the
@@ -25,11 +26,13 @@ export function BookViewer({
     const stage = stageRef.current;
     if (!stage) return;
     let cancelled = false;
+    let visible = true;
+    const controller = new AbortController();
+    const stopVisibility = observeMotionVisibility(stage, active => { visible = active; handle.current?.setVisible(active); });
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const start = async () => {
+      if (cancelled) return;
       try {
-        const probe = document.createElement("canvas");
-        if (!(probe.getContext("webgl2") || probe.getContext("webgl"))) return;
         const { createShelf } = await import("@/components/three/shelf-scene");
         if (cancelled) return;
         const css = getComputedStyle(document.documentElement);
@@ -38,6 +41,7 @@ export function BookViewer({
           container: stage,
           books: [book],
           active: 0,
+          signal: controller.signal,
           single: true,
           reducedMotion: reduce,
           fonts: {
@@ -46,20 +50,28 @@ export function BookViewer({
             mono: font("--font-plex-mono", "monospace"),
           },
           onReady: () => !cancelled && setReady(true),
+          onError: () => !cancelled && setReady(false),
         });
         if (cancelled) handle.current?.destroy();
+        else handle.current?.setVisible(visible);
       } catch {
         /* keep the static cover */
       }
     };
     // Defer until the browser is idle so the cover and text paint first.
-    const idle = (cb: () => void) => {
-      if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(cb, { timeout: 1500 });
-      else setTimeout(cb, 600);
-    };
-    idle(() => void start());
+    let cancelStart: () => void;
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(() => void start(), { timeout: 1500 });
+      cancelStart = () => window.cancelIdleCallback(id);
+    } else {
+      const id = window.setTimeout(() => void start(), 600);
+      cancelStart = () => window.clearTimeout(id);
+    }
     return () => {
       cancelled = true;
+      controller.abort();
+      cancelStart();
+      stopVisibility();
       handle.current?.destroy();
       handle.current = null;
     };

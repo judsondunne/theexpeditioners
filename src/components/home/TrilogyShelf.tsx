@@ -43,8 +43,10 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
   const handle = useRef<ShelfHandle | null>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const interacted = useRef(false);
+  const activeRef = useRef(0);
 
   const choose = useCallback((i: number, via: string) => {
+    activeRef.current = i;
     setActive(i);
     if (!interacted.current) {
       interacted.current = true;
@@ -57,13 +59,11 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
     const stage = stageRef.current;
     if (!stage) return;
     let cancelled = false;
+    const controller = new AbortController();
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const start = async () => {
       setStatus("loading");
       try {
-        const probe = document.createElement("canvas");
-        const gl = probe.getContext("webgl2") || probe.getContext("webgl");
-        if (!gl) throw new Error("WebGL unavailable");
         const { createShelf } = await import("@/components/three/shelf-scene");
         if (cancelled) return;
         const css = getComputedStyle(document.documentElement);
@@ -71,7 +71,8 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
         handle.current = await createShelf({
           container: stage,
           books: entries.map((e) => e.shelf),
-          active: 0,
+          active: activeRef.current,
+          signal: controller.signal,
           reducedMotion: reduce,
           fonts: {
             display: font("--font-league", "Impact, sans-serif"),
@@ -84,6 +85,7 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
             router.push(entries[i].href);
           },
           onReady: () => !cancelled && setStatus("ready"),
+          onError: () => !cancelled && setStatus("failed"),
         });
         if (cancelled) handle.current?.destroy();
       } catch {
@@ -102,6 +104,7 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
     io.observe(stage);
     return () => {
       cancelled = true;
+      controller.abort();
       io.disconnect();
       handle.current?.destroy();
       handle.current = null;
@@ -110,7 +113,7 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
 
   // Pause rendering when the section is off-screen.
   useEffect(() => {
-    const el = sectionRef.current;
+    const el = stageRef.current;
     if (!el) return;
     const io = new IntersectionObserver((items) => handle.current?.setVisible(items[0]?.isIntersecting ?? false), {
       rootMargin: "100px 0px",

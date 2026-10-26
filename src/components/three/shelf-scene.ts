@@ -10,6 +10,7 @@
  * Framework-agnostic: React mounts it, feeds it state and tears it down.
  */
 import * as THREE from "three";
+import { observeMotionVisibility } from "@/lib/motion";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 export interface ShelfBook {
@@ -47,6 +48,7 @@ export interface ShelfOptions {
   onSelect?: (index: number) => void;
   onReady?: () => void;
   onError?: (error: unknown) => void;
+  signal?: AbortSignal;
 }
 
 export interface ShelfHandle {
@@ -433,6 +435,23 @@ function buildBook(
 
 export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
   const { container, books } = opts;
+  if (opts.signal?.aborted) throw new DOMException("Book view cancelled", "AbortError");
+  // Finish asynchronous dependencies before allocating a GPU context.
+  const images = await Promise.all(books.map(async book => {
+    const [front, back] = await Promise.all([loadImage(book.front), book.back ? loadImage(book.back).catch(() => null) : Promise.resolve(null)]);
+    return { front, back };
+  }));
+  try {
+    await document.fonts?.ready;
+    await Promise.all([
+      document.fonts?.load(`400 64px ${opts.fonts.display}`),
+      document.fonts?.load(`italic 400 32px ${opts.fonts.serif}`),
+      document.fonts?.load(`500 32px ${opts.fonts.serif}`),
+      document.fonts?.load(`500 32px ${opts.fonts.mono}`),
+    ]);
+  } catch { /* retain system-font fallback */ }
+  if (opts.signal?.aborted) throw new DOMException("Book view cancelled", "AbortError");
+
   let active = opts.active;
   let visible = true;
   let destroyed = false;
@@ -454,7 +473,10 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
-  const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  const room = new RoomEnvironment();
+  const environment = pmrem.fromScene(room, 0.04);
+  const envTex = environment.texture;
+  room.dispose();
   scene.environment = envTex;
   scene.environmentIntensity = 0.5;
 
@@ -485,29 +507,8 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
 
   // --- textures
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
-  const images = await Promise.all(
-    books.map(async (b) => ({
-      front: await loadImage(b.front),
-      back: b.back ? await loadImage(b.back).catch(() => null) : null,
-    })),
-  );
-  if (destroyed) {
-    renderer.dispose();
-    return { setActive() {}, setVisible() {}, destroy() {} };
-  }
-  try {
-    await document.fonts?.ready;
-    await Promise.all([
-      document.fonts?.load(`400 64px ${opts.fonts.display}`),
-      document.fonts?.load(`italic 400 32px ${opts.fonts.serif}`),
-      document.fonts?.load(`500 32px ${opts.fonts.serif}`),
-      document.fonts?.load(`500 32px ${opts.fonts.mono}`),
-    ]);
-  } catch {
-    /* fall back to system fonts on the spine */
-  }
 
-  const disposables: { dispose: () => void }[] = [envTex, pmrem];
+  const disposables: { dispose: () => void }[] = [environment, pmrem];
   const rigs: BookRig[] = books.map((b, i) => {
     const front = textureFromImage(images[i].front, maxAniso);
     const back = images[i].back ? textureFromImage(images[i].back as HTMLImageElement, maxAniso) : null;
@@ -526,6 +527,7 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
 
   // --- poses
   let needsFrame = true;
+  let raf = 0;
   let layout = layoutFor(1.6);
   const qStack = new THREE.Quaternion().setFromRotationMatrix(
     new THREE.Matrix4().makeBasis(
@@ -565,6 +567,7 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
     camera.lookAt(layout.target);
     camera.updateProjectionMatrix();
     needsFrame = true;
+    requestFrame();
   }
 
   container.appendChild(canvas);
@@ -575,6 +578,8 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
   // --- interaction
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2(9, 9);
+  const pickTargets = rigs.map(rig => rig.group);
+  const intersections: THREE.Intersection[] = [];
   const parallax = new THREE.Vector2(0, 0);
   const parallaxTarget = new THREE.Vector2(0, 0);
   let hovered = -1;
@@ -582,10 +587,8 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
 
   const pick = (): number => {
     raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObjects(
-      rigs.map((r) => r.group),
-      true,
-    );
+    intersections.length = 0;
+    const hits = raycaster.intersectObjects(pickTargets, true, intersections);
     return hits.length ? (hits[0].object.userData.index as number) : -1;
   };
 
@@ -599,10 +602,12 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
       if (Math.abs(dx) > 4) drag.moved = true;
       rigs[drag.index].yawTarget = drag.startYaw + dx * 0.012;
       needsFrame = true;
+      requestFrame();
       return;
     }
     const idx = pick();
     hovered = idx;
+    requestFrame();
     canvas.style.cursor = idx >= 0 ? (idx === active ? "grab" : "pointer") : "default";
     needsFrame = true;
   }
@@ -612,6 +617,8 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
     pointer.set(9, 9);
     parallaxTarget.set(0, 0);
     canvas.style.cursor = "default";
+    needsFrame = true;
+    requestFrame();
   }
 
   function onPointerDown(e: PointerEvent) {
@@ -640,6 +647,8 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
     // settle on whichever face is nearer: front or back
     const turns = Math.round(r.yawTarget / Math.PI);
     r.yawTarget = turns * Math.PI;
+    needsFrame = true;
+    requestFrame();
     canvas.style.cursor = "grab";
   }
 
@@ -652,7 +661,6 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
   // --- animation
   const timer = new THREE.Timer();
   timer.connect(document);
-  let raf = 0;
   let introAt = performance.now() + (opts.reducedMotion ? 0 : 450);
   let introDone = opts.reducedMotion || Boolean(opts.single);
   if (opts.single) rigs.forEach((r) => (r.p = 1));
@@ -664,9 +672,12 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
     return [x, v] as const;
   }
 
+  function requestFrame() {
+    if (!destroyed && visible && !document.hidden && !raf) raf = requestAnimationFrame(frame);
+  }
   function frame() {
-    raf = requestAnimationFrame(frame);
-    if (!visible) return;
+    raf = 0;
+    if (destroyed || !visible || document.hidden) return;
     timer.update();
     const dt = Math.min(timer.getDelta(), 1 / 30);
     const t = timer.getElapsed();
@@ -689,16 +700,15 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
       if (!isActive && !drag) r.yawTarget = 0;
       [r.yaw, r.yawV] = opts.reducedMotion ? [r.yawTarget, 0] : spring(r.yaw, r.yawV, r.yawTarget, dt, 60, 12);
       const dimTarget = isActive ? 1 : 0.78;
-      r.dim += (dimTarget - r.dim) * Math.min(1, dt * 6);
+      r.dim = opts.reducedMotion ? dimTarget : r.dim + (dimTarget - r.dim) * Math.min(1, dt * 6);
 
       const p = THREE.MathUtils.clamp(r.p, -0.05, 1.08);
       const pe = THREE.MathUtils.clamp(p, 0, 1);
       // position: slot → stage along an arc that first pulls the book out toward the reader
-      const from = slotPosition(i, tmpV.clone());
+      const from = slotPosition(i, tmpV);
       from.z += r.hover * 0.07;
       from.x += r.hover * 0.025;
-      const to = layout.stage.clone();
-      const pos = from.lerp(to, pe);
+      const pos = from.lerp(layout.stage, pe);
       pos.z += Math.sin(Math.PI * pe) * 0.32;
       pos.y += Math.sin(Math.PI * pe) * 0.06;
       if (!opts.reducedMotion) {
@@ -726,13 +736,51 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
       renderer.render(scene, camera);
       needsFrame = false;
     }
+    if (!opts.reducedMotion || moving) requestFrame();
   }
 
   // first frame, then announce readiness
   renderer.compile(scene, camera);
   renderer.render(scene, camera);
   opts.onReady?.();
-  raf = requestAnimationFrame(frame);
+  const stopVisibility = observeMotionVisibility(container, active => {
+    visible = active;
+    if (active) { timer.reset(); requestFrame(); }
+    else { cancelAnimationFrame(raf); raf = 0; }
+  }, "100px");
+  const lost = (event: Event) => {
+    event.preventDefault();
+    destroy();
+    opts.onError?.(new Error("Book graphics context lost"));
+  };
+  canvas.addEventListener("webglcontextlost", lost);
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    cancelAnimationFrame(raf);
+    stopVisibility();
+    ro.disconnect();
+    canvas.removeEventListener("webglcontextlost", lost);
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerleave", onPointerLeave);
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    canvas.removeEventListener("pointerup", onPointerUp);
+    canvas.removeEventListener("pointercancel", onPointerUp);
+    const resources = new Set<{ dispose: () => void }>(disposables);
+    scene.traverse(object => {
+      if (object instanceof THREE.Mesh) {
+        resources.add(object.geometry);
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.forEach(material => resources.add(material));
+      }
+    });
+    resources.forEach(resource => resource.dispose());
+    timer.dispose();
+    renderer.dispose();
+    renderer.forceContextLoss();
+    canvas.remove();
+  }
+  requestFrame();
 
   return {
     setActive(index: number) {
@@ -742,32 +790,14 @@ export async function createShelf(opts: ShelfOptions): Promise<ShelfHandle> {
       introDone = true;
       introAt = 0;
       needsFrame = true;
+      requestFrame();
     },
     setVisible(v: boolean) {
       visible = v;
-      if (v) timer.reset();
+      if (v) { timer.reset(); requestFrame(); }
+      else { cancelAnimationFrame(raf); raf = 0; }
     },
-    destroy() {
-      destroyed = true;
-      cancelAnimationFrame(raf);
-        ro.disconnect();
-      canvas.removeEventListener("pointermove", onPointerMove);
-      canvas.removeEventListener("pointerleave", onPointerLeave);
-      canvas.removeEventListener("pointerdown", onPointerDown);
-      canvas.removeEventListener("pointerup", onPointerUp);
-      canvas.removeEventListener("pointercancel", onPointerUp);
-      scene.traverse((o) => {
-        if (o instanceof THREE.Mesh) {
-          o.geometry.dispose();
-          const mats = Array.isArray(o.material) ? o.material : [o.material];
-          mats.forEach((m) => m.dispose());
-        }
-      });
-      disposables.forEach((d) => d.dispose());
-      timer.dispose();
-      renderer.dispose();
-      canvas.remove();
-    },
+    destroy,
   };
 }
 

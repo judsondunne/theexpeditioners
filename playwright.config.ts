@@ -24,7 +24,7 @@ export default defineConfig({
   projects: [
     { name: "unit", testMatch: /unit\/.*\.spec\.ts/ },
     { name: "desktop", testMatch: /e2e\/.*\.spec\.ts/, use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
-    { name: "mobile", testMatch: /e2e\/(layout|navigation|refinements|purchase)\.spec\.ts/, use: { ...devices["Pixel 7"], ...(process.env.CI ? { deviceScaleFactor: 1 } : {}) } },
+    { name: "mobile", testMatch: /e2e\/(layout|navigation|refinements|purchase|performance)\.spec\.ts/, use: { ...devices["Pixel 7"], ...(process.env.CI ? { deviceScaleFactor: 1 } : {}) } },
   ],
   webServer: process.env.BASE_URL
     ? undefined

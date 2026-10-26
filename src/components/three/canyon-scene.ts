@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { nearestPointIndex } from "@/lib/nearest-point";
+import { observeMotionVisibility } from "@/lib/motion";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import type { MapPlace } from "@/components/explore/MapRoom";
 
@@ -18,20 +20,17 @@ const toWorld = (x: number, y: number) => new THREE.Vector3((x - .5) * 26, 0, (y
 const makeCurve = (points: number[][]) => new THREE.CatmullRomCurve3(points.map(([x, y]) => toWorld(x, y)));
 const curves = [makeCurve(azure), makeCurve(drowned)];
 const riverPoints = curves.flatMap(curve => curve.getPoints(220));
+const riverDistance = nearestPointIndex(riverPoints);
+const summits = [[.12,.145,1.6],[.375,.38,1.8],[.595,.38,1.9],[.893,.473,2.2]].map(([x,z,strength]) => ({ point: toWorld(x,z), strength }));
+const hash = (a: number, b: number) => { const n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return n - Math.floor(n); };
 
 function noise(x: number, z: number) {
-  const hash = (a: number, b: number) => { const n = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return n - Math.floor(n); };
   const ix=Math.floor(x), iz=Math.floor(z), fx=x-ix, fz=z-iz;
   const u=fx*fx*(3-2*fx),v=fz*fz*(3-2*fz);
   return THREE.MathUtils.lerp(THREE.MathUtils.lerp(hash(ix,iz),hash(ix+1,iz),u),THREE.MathUtils.lerp(hash(ix,iz+1),hash(ix+1,iz+1),u),v);
 }
 function terrainHeight(x: number, z: number) {
-  let distance = Infinity;
-  for (const p of riverPoints) {
-    const d = (p.x - x) ** 2 + (p.z - z) ** 2;
-    if (d < distance) distance = d;
-  }
-  distance = Math.sqrt(distance);
+  const distance = Math.sqrt(riverDistance(x, z));
   const broad=noise(x*.65,z*.65),medium=noise(x*1.8,z*1.8),fine=noise(x*5,z*5);
   const ridges=Math.abs(Math.sin(x*2.2+Math.sin(z*2.8)*.65));
   const plateau=1.7 + broad*.85 + medium*.26 + fine*.08;
@@ -40,8 +39,8 @@ function terrainHeight(x: number, z: number) {
   const slope=Math.exp(-Math.pow((distance-.7)/.6,2));
   let h=.06+plateau*valley+slope*(ridges-.5)*.15;
   // Four summits and the broken ridges between them, softened into the table.
-  for (const [px, py, strength] of [[.12,.145,1.6],[.375,.38,1.8],[.595,.38,1.9],[.893,.473,2.2]]) {
-    const p=toWorld(px,py), d=(x-p.x)**2+(z-p.z)**2;
+  for (const { point: p, strength } of summits) {
+    const d=(x-p.x)**2+(z-p.z)**2;
     h+=strength*Math.exp(-d/2.0)*valley*(.8+medium*.4);
   }
   return Math.max(.04,h);
@@ -196,6 +195,8 @@ export function createCanyon({ container, places, markers, onFailure, compact = 
   const initial=overview();camera.position.copy(initial.position);controls.target.copy(initial.target);controls.update();
   const projected=new THREE.Vector3();
   const occupied: { x:number; y:number; w:number }[]=[];
+  const labels = markers.map(button => button?.querySelector<HTMLElement>(".canyon-pin-name") ?? null);
+  let viewportWidth = 0, viewportHeight = 0;
   function render(){
     frame=0;if(destroyed||!visible)return;
     if(destination){
@@ -205,16 +206,18 @@ export function createCanyon({ container, places, markers, onFailure, compact = 
     }
     controls.update();
     renderer.render(scene,camera);
+    // Read every label before writing styles; interleaving them flushes style repeatedly.
+    const labelWidths = labels.map(label => Math.min(160, label?.offsetWidth || 120));
     occupied.length=0;
     markerPoints.forEach((point,i)=>{
       const button=markers[i];if(!button)return;
       projected.copy(point).project(camera);
-      const x=(projected.x*.5+.5)*container.clientWidth,y=(-projected.y*.5+.5)*container.clientHeight;
-      const inView=projected.z<1 && x>12 && x<container.clientWidth-12 && y>12 && y<container.clientHeight-12;
+      const x=(projected.x*.5+.5)*viewportWidth,y=(-projected.y*.5+.5)*viewportHeight;
+      const inView=projected.z<1 && x>12 && x<viewportWidth-12 && y>12 && y<viewportHeight-12;
       // Label offsets spread neighbouring names without moving their pins.
-      const label=button.querySelector<HTMLElement>(".canyon-pin-name");
+      const label=labels[i];
       if(label){
-        const w=Math.min(160, label.offsetWidth || 120);
+        const w=labelWidths[i];
         let dy=0;
         for(let attempt=0;attempt<6;attempt++){
           if(!occupied.some(p=>Math.abs(p.y-(y+dy))<23&&x<p.x+p.w&&x+w>p.x))break;
@@ -234,9 +237,9 @@ export function createCanyon({ container, places, markers, onFailure, compact = 
   function request(){if(!destroyed&&visible&&!frame)frame=requestAnimationFrame(render);}
   controls.addEventListener("change",request);
   controls.addEventListener("start",()=>{destination=null;});
-  function resize(){const w=container.clientWidth,h=container.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();request();}
+  function resize(){const w=container.clientWidth,h=container.clientHeight;if(w===viewportWidth&&h===viewportHeight)return;viewportWidth=w;viewportHeight=h;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();request();}
   const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(container);resize();
-  const observer=new IntersectionObserver(items=>{visible=items[0].isIntersecting;if(visible)request();});observer.observe(container);
+  const stopVisibility=observeMotionVisibility(container, active=>{visible=active;if(active)request();else{cancelAnimationFrame(frame);frame=0;}}, "0px");
   const lost=(e:Event)=>{e.preventDefault();onFailure();};canvas.addEventListener("webglcontextlost",lost);
   const handle: CanyonHandle={
     focus(index){
@@ -249,7 +252,7 @@ export function createCanyon({ container, places, markers, onFailure, compact = 
     zoom(amount){const offset=camera.position.clone().sub(controls.target).multiplyScalar(amount);offset.clampLength(5,75);destination={position:controls.target.clone().add(offset),target:controls.target.clone()};request();},
     reset(){selected=-1;destination=overview();request();},
     top(){const height=Math.max(compact?36:32,43/camera.aspect);destination={position:new THREE.Vector3(0,height,.1),target:new THREE.Vector3(0,0,0)};request();},
-    destroy(){destroyed=true;cancelAnimationFrame(frame);resizeObserver.disconnect();observer.disconnect();controls.dispose();canvas.removeEventListener("webglcontextlost",lost);scene.traverse(obj=>{if(obj instanceof THREE.Mesh||obj instanceof THREE.LineSegments){obj.geometry.dispose();const mats=Array.isArray(obj.material)?obj.material:[obj.material];mats.forEach(m=>m.dispose());}});inkMap.dispose();renderer.dispose();renderer.forceContextLoss();canvas.remove();},
+    destroy(){destroyed=true;cancelAnimationFrame(frame);resizeObserver.disconnect();stopVisibility();controls.dispose();canvas.removeEventListener("webglcontextlost",lost);scene.traverse(obj=>{if(obj instanceof THREE.Mesh||obj instanceof THREE.LineSegments){obj.geometry.dispose();const mats=Array.isArray(obj.material)?obj.material:[obj.material];mats.forEach(m=>m.dispose());}});inkMap.dispose();renderer.dispose();renderer.forceContextLoss();canvas.remove();},
   };
   // Markers are HTML controls, so every named location is available by keyboard.
 

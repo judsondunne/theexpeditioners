@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 import { Engraving } from "@/components/ui/Engraving";
 import { maps, plates } from "@/content/engravings";
 import { storyBeats, storyQuestion } from "@/content/story";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
+import { observeMotionVisibility } from "@/lib/motion";
 
 /**
  * "The story so far" — a pinned, scroll-driven sequence under the hero.
@@ -58,6 +59,7 @@ function PinnedStory({ bookHref, cover }: Props) {
   const section = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const year = useRef<HTMLSpanElement>(null);
+  const rail = useRef<HTMLDivElement>(null);
   const counter = useRef<HTMLSpanElement>(null);
   const completed = useRef(false);
 
@@ -69,17 +71,28 @@ function PinnedStory({ bookHref, cover }: Props) {
     });
     let raf = 0;
     let lastActive = -1;
+    let lastProgress = -1;
+    let near = true;
+    let viewportHeight = window.innerHeight;
     const panels = Array.from(stage.current?.querySelectorAll<HTMLDivElement>("[data-panel]") ?? []);
 
+    const measure = () => {
+      if (stage.current) viewportHeight = stage.current.clientHeight + (parseFloat(getComputedStyle(stage.current).top) || 0);
+    };
+    const property = (node: HTMLElement, name: string, value: string) => {
+      if (node.style.getPropertyValue(name) !== value) node.style.setProperty(name, value);
+    };
     const update = () => {
       raf = 0;
       const el = section.current;
       const st = stage.current;
       if (!el || !st) return;
       const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const p = clamp01(-rect.top / Math.max(1, rect.height - vh));
-      st.style.setProperty("--p", p.toFixed(4));
+      const p = clamp01(-rect.top / Math.max(1, rect.height - viewportHeight));
+      if (p === lastProgress) return;
+      lastProgress = p;
+      // Progress belongs only to the rail; do not invalidate every scene’s inherited styles.
+      if (rail.current) property(rail.current, "--p", p.toFixed(4));
 
       let active = 0;
       bounds.forEach(([s, e], i) => {
@@ -90,24 +103,27 @@ function PinnedStory({ bookHref, cover }: Props) {
         const fadeIn = i === 0 ? 1 : smooth(s - span * 0.08, s + span * 0.1, p);
         const fadeOut = i === PANELS - 1 ? 1 : 1 - smooth(e - span * 0.1, e + span * 0.08, p);
         const vis = Math.min(fadeIn, fadeOut);
-        node.style.setProperty("--lp", lp.toFixed(4));
-        node.style.setProperty("--vis", vis.toFixed(3));
-        node.style.visibility = vis < 0.002 ? "hidden" : "visible";
         if (p >= s) active = i;
+        property(node, "--vis", vis.toFixed(3));
+        const visibility = vis < 0.002 ? "hidden" : "visible";
+        if (node.style.visibility !== visibility) node.style.visibility = visibility;
+        if (visibility === "hidden") return;
+        property(node, "--lp", lp.toFixed(4));
 
         // beat-specific choreography
         if (i === 0) {
           const scan = smooth(0.04, 0.5, lp);
           const fail = smooth(0.56, 0.8, lp);
-          node.style.setProperty("--scan", scan.toFixed(4));
-          node.style.setProperty("--fail", fail.toFixed(4));
+          property(node, "--scan", scan.toFixed(4));
+          property(node, "--fail", fail.toFixed(4));
           const flicker = lp > 0.52 && lp < 0.78 ? (Math.random() > 0.5 ? 1 : 0.15) : 1;
-          node.style.setProperty("--flicker", String(flicker));
-          if (year.current) year.current.textContent = String(Math.round(1880 + 100 * smooth(0.08, 0.66, lp)));
+          property(node, "--flicker", String(flicker));
+          const label = String(Math.round(1880 + 100 * smooth(0.08, 0.66, lp)));
+          if (year.current && year.current.textContent !== label) year.current.textContent = label;
         }
-        if (i === 2) node.style.setProperty("--paper", smooth(0.02, 0.22, lp).toFixed(4));
-        if (i === 3) node.style.setProperty("--route", smooth(0.1, 0.8, lp).toFixed(4));
-        if (i === 4) node.style.setProperty("--rise", smooth(0.28, 0.72, lp).toFixed(4));
+        if (i === 2) property(node, "--paper", smooth(0.02, 0.22, lp).toFixed(4));
+        if (i === 3) property(node, "--route", smooth(0.1, 0.8, lp).toFixed(4));
+        if (i === 4) property(node, "--rise", smooth(0.28, 0.72, lp).toFixed(4));
       });
 
       if (counter.current && active !== lastActive) {
@@ -121,14 +137,25 @@ function PinnedStory({ bookHref, cover }: Props) {
     };
 
     const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
+      if (near && !raf) raf = requestAnimationFrame(update);
     };
+    const onResize = () => { measure(); onScroll(); };
+    measure();
     update();
+    const observer = new ResizeObserver(onResize);
+    if (stage.current) observer.observe(stage.current);
+    const stopVisibility = section.current ? observeMotionVisibility(section.current, active => {
+      near = active;
+      if (active) onScroll();
+      else { cancelAnimationFrame(raf); raf = 0; }
+    }, "100% 0px") : () => {};
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
+      observer.disconnect();
+      stopVisibility();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -159,7 +186,7 @@ function PinnedStory({ bookHref, cover }: Props) {
         <span ref={counter} aria-hidden="true" className="label absolute right-[var(--gutter)] top-6 z-30 text-cream/60">
           01 / {String(PANELS).padStart(2, "0")}
         </span>
-        <ProgressRail />
+        <ProgressRail progressRef={rail} />
 
         {/* 1 — 1880 to 1980 */}
         <div data-panel="0" style={panelStyle} className="absolute inset-0">
@@ -420,9 +447,9 @@ function Words({ text, from, to }: { text: string; from: number; to: number }) {
 }
 
 /** A compass-needle progress rail on the right edge: N at the top, S at the foot. */
-function ProgressRail() {
+function ProgressRail({ progressRef }: { progressRef: RefObject<HTMLDivElement | null> }) {
   return (
-    <div aria-hidden="true" className="story-progress-rail absolute bottom-[12vh] right-[var(--gutter)] top-[12vh] z-20 hidden w-4 flex-col items-center md:flex">
+    <div ref={progressRef} aria-hidden="true" className="story-progress-rail absolute bottom-[12vh] right-[var(--gutter)] top-[12vh] z-20 hidden w-4 flex-col items-center md:flex">
       <span className="label text-cream/60">N</span>
       <div className="relative my-3 w-px flex-1 bg-cream/20">
         <div

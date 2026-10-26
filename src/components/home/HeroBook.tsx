@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { observeMotionVisibility } from "@/lib/motion";
 
 /**
  * Book One as a physical object: a CSS 3D paperback (front, back, spine and
@@ -30,18 +31,27 @@ export function HeroBook({
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const finePointer = window.matchMedia("(pointer: fine)").matches;
-    if (reduce || !finePointer) return;
     let raf = 0;
+    let inView = true;
+    const scope = el.closest("section") ?? el;
+    const stopVisibility = observeMotionVisibility(scope, active => {
+      inView = active;
+      scope.style.setProperty("--ambient-motion", active ? "running" : "paused");
+      if (!active) { cancelAnimationFrame(raf); raf = 0; }
+    });
+    if (reduce || !finePointer) return stopVisibility;
     let tx = 0;
     let ty = 0;
     let x = 0;
     let y = 0;
     const onMove = (e: PointerEvent) => {
+      if (!inView) return;
       tx = (e.clientX / window.innerWidth) * 2 - 1;
       ty = (e.clientY / window.innerHeight) * 2 - 1;
       if (!raf) raf = requestAnimationFrame(step);
     };
     const step = () => {
+      if (!inView) { raf = 0; return; }
       x += (tx - x) * 0.08;
       y += (ty - y) * 0.08;
       el.style.setProperty("--tilt-y", `${x * 9}deg`);
@@ -50,6 +60,7 @@ export function HeroBook({
     };
     window.addEventListener("pointermove", onMove, { passive: true });
     return () => {
+      stopVisibility();
       window.removeEventListener("pointermove", onMove);
       cancelAnimationFrame(raf);
     };
