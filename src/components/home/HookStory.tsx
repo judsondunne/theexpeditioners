@@ -26,7 +26,7 @@ type Props = {
 };
 
 const beats = storyBeats.filter(beat => beat.id !== "siblings").map(beat => {
-  if (beat.id === "machines") return { ...beat, kicker: "A different history", lines: ["In 1880, the world built its first computers.", "One hundred years later.", "And then they failed."] };
+  if (beat.id === "machines") return { ...beat, kicker: "A different history", lines: ["In 1880, the world built its first computers.", "And then they failed."] };
   if (beat.id === "dispatch") return { ...beat, kicker: "Their father left a trail", lines: ["A man with a clockwork hand.", "Half of a strange map.", "And a secret worth chasing."] };
   return beat;
 });
@@ -256,7 +256,6 @@ function PinnedStory({ bookHref, cover }: Props) {
           <div className="opening-copy">
 
             <h2><Words text="In 1880, the world" from={0} to={.12} /><br /><Words text="built its first computers." from={.12} to={.28} /></h2>
-            <p className="opening-century"><Words text="One hundred years later." from={.3} to={.46} /></p>
             <p className="opening-failure" style={{ opacity: "var(--fail)", transform: "translateY(calc((1 - var(--fail)) * 18px))" }}>And then<br /><span>they failed.</span></p>
           </div>
         </div>
