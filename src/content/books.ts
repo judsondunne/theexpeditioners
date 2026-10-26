@@ -170,7 +170,7 @@ export const books: Book[] = [
     title: "The Secret of King Triton's Lair",
     fullTitle: "The Expeditioners and the Secret of King Triton's Lair",
     hook: {
-      text: "Why did Alexander leave the maps behind, and why are government agents so determined to seize them?",
+      text: "Kit must find a deadly hidden island and unlock its secrets.",
       status: "verified",
       source: { label: "S. S. Taylor’s official book description", url: "https://www.sarahstewarttaylor.com/expeditioners" },
     },
@@ -281,7 +281,7 @@ export const books: Book[] = [
     title: "The Lost City of Maps",
     fullTitle: "The Expeditioners and the Lost City of Maps",
     hook: {
-      text: "Will Kit have what it takes to find the map and a secret desert city known only in legend?",
+      text: "A dangerous journey across the Simerian Desert to retrieve a secret map.",
       status: "verified",
       source: { label: "S. S. Taylor’s official book description", url: "https://www.sarahstewarttaylor.com/expeditioners" },
     },
