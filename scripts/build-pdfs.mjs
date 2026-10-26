@@ -10,6 +10,7 @@ const page = await browser.newPage();
 for (const job of jobs) {
   await page.goto(base + job.path, { waitUntil: "networkidle" });
   await page.emulateMedia({ media: "print" });
+  await page.evaluate(() => document.fonts.ready);
   await page.pdf({ path: job.out, format: "Letter", printBackground: true, margin: { top: 0, right: 0, bottom: 0, left: 0 } });
   console.log("wrote", job.out);
 }

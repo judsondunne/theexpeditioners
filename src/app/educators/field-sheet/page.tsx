@@ -72,10 +72,6 @@ export default function FieldSheetPage() {
               </ol>
             </div>
           </div>
-          <p className="mt-3 text-center font-serif text-[9pt] italic">
-            S. S. Taylor has loved maps since she was ten, when she found a mistake on a map of her own neighborhood. What will
-            yours get wrong?
-          </p>
         </div>
       </div>
     </div>

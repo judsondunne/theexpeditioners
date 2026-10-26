@@ -71,3 +71,7 @@ The progress airship is the same existing `airship` engraving used in the homepa
 The About page uses 25 covers across eight collections. Twenty additional WebP files in `public/images/bibliography/` come from the creators’ official websites and Macmillan’s cover service. Exact image URLs are recorded in `assets-src/official/bibliography-sources.json`. The Sweeney St. George covers were checked visually against their titles, rather than inferred from page image order. Katherine Roy’s official book renders are retained. The existing Expeditioners cover assets are reused.
 
 The homepage hero uses decorative vector award ribbons. The lower recognition gallery retains the official award marks at the user’s request. Both logo assets use smooth curves and one SVG viewBox. The footer now includes nine drawings from the existing Pearson Scott Foresman engraving collection. The progress airship points vertically downward.
+
+## Final print and icon refinements
+
+The mapmaker’s field-sheet PDF is regenerated from its printable route without the author/map anecdote. The About cover collections use the light paper background without shelf rules. Browser and Apple icons now use the complete Book One cover; `node scripts/art/build-cover-icons.mjs` builds the 256px PNG, 180px Apple icon and 16/32/48px ICO.
