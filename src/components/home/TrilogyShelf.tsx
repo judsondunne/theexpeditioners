@@ -76,7 +76,7 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
           fonts: {
             display: font("--font-league", "Impact, sans-serif"),
             serif: font("--font-newsreader", "Georgia, serif"),
-            mono: font("--font-plex-mono", "monospace"),
+            mono: font("--font-newsreader", "Georgia, serif"),
           },
           onActivateBook: (i) => choose(i, "canvas"),
           onSelect: (i) => {
@@ -168,7 +168,7 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
               The trilogy · read in order
             </p>
             <h2 id="trilogy-title" className="mt-4 font-serif text-[clamp(2.2rem,4.2vw,3.9rem)] font-light leading-[1.02] tracking-[-0.015em]">
-              Three books. <span>One expedition.</span>
+              The Expeditioners trilogy
             </h2>
           </div>
         </div>
@@ -214,37 +214,7 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
 
           {/* Index + details */}
           <div className="lg:col-span-4 lg:pt-4">
-            <div role="tablist" aria-label="The Expeditioners books" aria-orientation="vertical" className="border-t border-cream/20">
-              {entries.map((e, i) => (
-                <button
-                  key={e.slug}
-                  ref={(n) => {
-                    tabRefs.current[i] = n;
-                  }}
-                  role="tab"
-                  id={`shelf-tab-${e.slug}`}
-                  aria-selected={i === active}
-                  aria-controls={`shelf-panel-${e.slug}`}
-                  tabIndex={i === active ? 0 : -1}
-                  onClick={() => choose(i, "tab")}
-                  onKeyDown={(ev) => onTabKey(ev, i)}
-                  className={cn(
-                    "group flex w-full items-baseline gap-4 border-b border-cream/20 py-4 text-left transition-colors",
-                    i === active ? "text-cream" : "text-cream/50 hover:text-cream/85",
-                  )}
-                >
-                  <span className="label w-16 shrink-0">Book {e.ordinal}</span>
-                  <span className="font-serif text-[1.15rem] leading-snug">{e.title}</span>
-                  <span
-                    aria-hidden="true"
-                    className={cn("ml-auto transition-opacity", i === active ? "opacity-100" : "opacity-0")}
-                    style={{ color: e.palette.accent }}
-                  >
-                    ●
-                  </span>
-                </button>
-              ))}
-            </div>
+
 
             <div className="relative mt-8 grid">
               {entries.map((e, i) => (
@@ -279,6 +249,37 @@ export function TrilogyShelf({ entries }: { entries: ShelfEntry[] }) {
                     </Link>
                   </div>
                 </div>
+              ))}
+            </div>
+            <div role="tablist" aria-label="The Expeditioners books" aria-orientation="vertical" className="mt-10 border-t border-cream/20">
+              {entries.map((e, i) => (
+                <button
+                  key={e.slug}
+                  ref={(n) => {
+                    tabRefs.current[i] = n;
+                  }}
+                  role="tab"
+                  id={`shelf-tab-${e.slug}`}
+                  aria-selected={i === active}
+                  aria-controls={`shelf-panel-${e.slug}`}
+                  tabIndex={i === active ? 0 : -1}
+                  onClick={() => choose(i, "tab")}
+                  onKeyDown={(ev) => onTabKey(ev, i)}
+                  className={cn(
+                    "group flex w-full items-baseline gap-4 border-b border-cream/20 py-4 text-left transition-colors",
+                    i === active ? "text-cream" : "text-cream/50 hover:text-cream/85",
+                  )}
+                >
+                  <span className="label w-16 shrink-0">Book {e.ordinal}</span>
+                  <span className="font-serif text-[1.15rem] leading-snug">{e.title}</span>
+                  <span
+                    aria-hidden="true"
+                    className={cn("ml-auto transition-opacity", i === active ? "opacity-100" : "opacity-0")}
+                    style={{ color: e.palette.accent }}
+                  >
+                    ●
+                  </span>
+                </button>
               ))}
             </div>
           </div>

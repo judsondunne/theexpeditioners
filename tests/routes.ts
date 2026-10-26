@@ -9,6 +9,7 @@ export const routes = [
   "/explore",
   "/educators",
   "/about",
+  "/credits",
   "/journal",
   "/journal/is-the-expeditioners-right-for-my-reader",
   "/journal/behind-the-books",

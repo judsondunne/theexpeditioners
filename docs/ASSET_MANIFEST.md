@@ -37,16 +37,31 @@ Social cards (`opengraph-image.tsx`), favicon/apple icon, the field-sheet PDF (`
 
 ## Fonts
 
-League Gothic, Newsreader, IBM Plex Mono, Reenie Beanie — SIL OFL. TTF copies in `assets-src/fonts/` are static instances used only for social cards.
+League Gothic, Libre Caslon Text, IBM Plex Mono, Reenie Beanie — SIL OFL (Newsreader remains in the existing social-card source assets). TTF copies in `assets-src/fonts/` are static instances used only for social cards.
 
 ## Still needed from the family
 
 1. Written approval to use the covers, interior art and jacket map online (publisher + illustrator).
 2. Print-resolution cover files, real spine scans, the full jacket map, and Book 2's endpaper chart.
-3. A credited author portrait (none is used; the uncredited photo found online was deliberately left out).
+3. Additional credited farm photographs. Official website portraits were added in the October 26 revision below.
 4. Trailer video files, if they should return.
 5. Confirmation of the Book 3 cover artist.
 
 ## Responsive display derivatives
 
 `public/images/optimized/` is generated from the existing public-domain engraving and map assets by `npm run art:optimize`. The original sources remain intact. Mask variants retain transparency at small display sizes; the hero map is flattened against white before compression, preserving its appearance when multiplied onto the paper background. These files remove first-request resizing and encoding from the critical path.
+
+## October 26, 2026 refinements
+
+| Asset | Provenance / use |
+|---|---|
+| `images/brand/expeditioners-lettering.svg` | Vector tracing of the white lettering on `assets-src/covers/book-1-front.jpg`; regenerated with `node scripts/art/trace-lettering.mjs`. Original D, R, N and arched baseline retained. |
+| `images/awards/texas-bluebonnet.jpg` | Texas Library Association: https://txla.org/wp-content/uploads/2022/04/TBA-Logo-RGB.jpg |
+| `images/awards/dorothy-canfield-fisher.jpg` | Historical logo by Hedda Peterson via Thetford Academy Library: https://talibrary.org/the-dcf-award/ |
+| `images/awards/indie-next.png` | American Booksellers Association’s official PNG: https://www.bookweb.org/sites/default/files/diy/INL-RefreshLogo-FINAL.png |
+| `images/people/sarah-stewart-taylor.webp` | Current portrait from Sarah’s official About page. Original Wix asset `a558a6_e6ca41002d634124abb8f70315140e03~mv2.jpeg`. |
+| `images/people/sarah-portrait.webp` | Second professional portrait from Sarah’s official homepage; Wix asset `68630f_cffafd8c7f0c4112a33a237ddac0bf56~mv2.jpg`. Photographer not named by that page. |
+| `images/people/katherine-roy.webp` | Official portrait, photographer Tim Stout; Katherine’s About page, `PhotoCredit_TimStout_IMG_5767_COLOR.jpg`. |
+| `images/art/canyon-framed.webp` | Crop of the existing Thomas Moran public-domain print, excluding the white mount and printed caption. No generated artwork. |
+
+The progress airship is the same existing `airship` engraving used in the homepage icon statement. The generated alternative was rejected and is not included in the site. Portraits use compressed WebP display derivatives. The paperback serif is now Libre Caslon Text (SIL OFL), chosen to approximate the cover’s subtitle and author lettering; the exact original typeface has not been confirmed.

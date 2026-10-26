@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("the refined story preserves scroll choreography with five scenes and a typeset newspaper", async ({ page }) => {
+test("the story preserves five scenes, original book art and a moving airship", async ({ page }) => {
   await page.goto("/");
   const section = page.locator("#the-premise");
   await expect(section.locator("[data-panel]")).toHaveCount(5);
@@ -25,17 +25,25 @@ test("the refined story preserves scroll choreography with five scenes and a typ
   expect(heading).not.toBeNull();
   expect(Math.abs(heading!.x + heading!.width / 2 - page.viewportSize()!.width / 2)).toBeLessThan(4);
   await scrub((1.35 + 1 + .7 * 1.25) / 5.85);
-  const newspaper = section.getByRole("article", { name: "An imagined newspaper from the world of the story" });
-  await expect(newspaper.getByRole("heading", { name: /Alexander West.*Presumed Dead/ })).toBeVisible();
-  await expect(newspaper.getByText("The Realm Gazette", { exact: true })).toBeVisible();
-  const paperBounds = await newspaper.boundingBox();
+  await expect(section.getByText("The Realm Gazette", { exact: true })).toHaveCount(0);
+  const illustration = section.getByRole("img", { name: "Katherine Roy’s illustration of Kit and the man with a clockwork hand" });
+  await expect(illustration).toBeVisible();
+  const artBounds = await illustration.boundingBox();
   const skipBounds = await section.getByRole("link", { name: "Skip the story" }).boundingBox();
-  expect(paperBounds!.y).toBeGreaterThan(skipBounds!.y + skipBounds!.height);
+  expect(artBounds!.y).toBeGreaterThan(skipBounds!.y + skipBounds!.height);
+  if (page.viewportSize()!.width >= 768) {
+    const rail = section.locator(".story-rail-airship");
+    const railY = (await rail.boundingBox())!.y;
+    await scrub(.9);
+    await expect.poll(async () => (await rail.boundingBox())!.y).toBeGreaterThan(railY + 20);
+    await scrub((1.35 + 1 + .7 * 1.25) / 5.85);
+  }
   expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
   await expect(section.getByText(/Kit, the brain|M.K., the tinkerer|Zander, the brave|Via telegraph|Wood engraving|Public domain|Scientific American/)).toHaveCount(0);
-  await page.screenshot({ path: test.info().outputPath("newspaper-scene.png") });
+  await page.screenshot({ path: test.info().outputPath("clockwork-hand-scene.png") });
   await scrub((1.35 + 1 + 1.25 + .7) / 5.85);
-  await expect(section.locator('[data-panel="3"] svg path')).toBeVisible();
+  await expect(section.locator('[data-panel="3"] svg')).toHaveCount(0);
+  await expect(section.locator('[data-panel="3"] img')).toHaveAttribute("src", /canyon-framed/);
   await scrub(.98);
   await expect(section.locator('[data-panel="4"]').getByRole("link", { name: "Find out in Book One" })).toBeVisible();
   await scrub(.1 * 1.35 / 5.85);
@@ -70,6 +78,12 @@ test("3D canyon camera, location selection and original map all work", async ({ 
   await expect(page.getByRole("button", { name: "Ghost Falls", exact: true })).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".canyon-caption")).toContainText("Ghost Falls");
   await expect.poll(async () => (await scene.screenshot()).equals(before)).toBe(false);
+  await scene.scrollIntoViewIfNeeded();
+  const canvas = scene.locator("canvas");
+  const beforeWheel = await canvas.screenshot();
+  await canvas.hover({ position: { x: 40, y: 40 } });
+  await page.mouse.wheel(0, -450);
+  await expect.poll(async () => (await canvas.screenshot()).equals(beforeWheel)).toBe(false);
   await zoom.click();
   await page.getByRole("button", { name: "View canyon from above" }).click();
   await page.getByRole("button", { name: "Reset canyon view" }).click();
@@ -107,4 +121,36 @@ test("reduced motion presents all revised story beats as readable content", asyn
     await expect(story.getByText(new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))).toBeVisible();
   }
   await expect(story.getByRole("link", { name: "Find out in Book One" })).toBeVisible();
+});
+
+
+test("the homepage uses original lettering and award graphics, with clean map chrome", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("header .series-wordmark").first()).toBeVisible();
+  const marks = page.locator(".hero-praise .award-art img");
+  await expect(marks).toHaveCount(3);
+  await expect.poll(() => marks.evaluateAll(images => images.every(image => (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+  await expect(page.locator(".canyon-room--compact .canyon-toolbar")).toHaveCount(0);
+  await expect(page.locator(".canyon-room--compact .canyon-caption")).toHaveCount(0);
+  await expect(page.getByText("Begin at the beginning", { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/All for Book One/)).toHaveCount(0);
+  const details = page.getByRole("tabpanel").first();
+  const tabs = page.getByRole("tablist");
+  const order = await details.evaluate((panel) => {
+    const tabs = document.querySelector('[role="tablist"]');
+    return Boolean(tabs && panel.compareDocumentPosition(tabs) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(order).toBe(true);
+  await expect(tabs).toHaveCount(1);
+});
+
+test("about contains both biographies and book lists, and credits have their own page", async ({ page }) => {
+  await page.goto("/about");
+  await expect(page.getByRole("heading", { name: "Sarah Stewart Taylor", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Books by Katherine Roy", exact: true })).toBeVisible();
+  await expect(page.getByText(/also known as|One writer, two names|is the name Sarah Stewart Taylor writes under/)).toHaveCount(0);
+  await expect(page.locator("#credits")).toHaveCount(0);
+  await page.getByRole("navigation", { name: "Footer", exact: true }).getByRole("link", { name: "Image credits" }).click();
+  await expect(page).toHaveURL(/\/credits$/);
+  await expect(page.getByRole("heading", { name: "Pictures on this site", exact: true })).toBeVisible();
 });

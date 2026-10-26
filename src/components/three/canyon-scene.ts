@@ -73,7 +73,8 @@ export function createCanyon({ container, places, markers, onFailure, compact = 
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.dampingFactor = .09;
-  controls.enableZoom = false; // Preserve page scrolling; zoom buttons work everywhere.
+  controls.enableZoom = true;
+  controls.zoomSpeed = .65;
   controls.enablePan = true;
   controls.minDistance = 5;
   controls.maxDistance = 75;
@@ -81,8 +82,8 @@ export function createCanyon({ container, places, markers, onFailure, compact = 
   controls.maxPolarAngle = Math.PI * .46;
   controls.touches.ONE = THREE.TOUCH.ROTATE;
   controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
-  canvas.style.touchAction = "pan-y";
-  // One-finger scroll remains available on the page; two fingers can explore.
+  canvas.style.touchAction = "none";
+  // OrbitControls supports mouse-wheel, trackpad pinch and two-finger dolly.
   if (window.matchMedia("(pointer: coarse)").matches) controls.touches.ONE = THREE.TOUCH.PAN;
   scene.add(new THREE.HemisphereLight("#f8e4b7", "#3a1525", 2.9));
   const sun = new THREE.DirectionalLight("#ffe7b1", 4.5);

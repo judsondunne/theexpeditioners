@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { navigation } from "@/content/site";
@@ -78,7 +79,7 @@ export function SiteHeader({ purchases }: { purchases: PurchaseBook[] }) {
       </a>
       <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-6">
         <Link href="/" className="group flex items-baseline gap-2.5" aria-label="The Expeditioners — home">
-          <span className="display text-[1.75rem] leading-none tracking-[0.01em]">The Expeditioners</span>
+          <Wordmark className="w-[10rem] sm:w-[11rem]" />
         </Link>
 
         <nav aria-label="Main" className="hidden lg:block">
@@ -102,7 +103,7 @@ export function SiteHeader({ purchases }: { purchases: PurchaseBook[] }) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <PurchaseButton book={purchase} location="header" label={`Buy Book ${purchase.ordinal}`} className="hidden sm:inline-flex" />
+          <div className="hidden sm:block"><PurchaseButton book={purchase} location="header" label={`Buy Book ${purchase.ordinal}`} /></div>
           <button
             ref={menuButton}
             type="button"

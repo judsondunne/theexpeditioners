@@ -20,48 +20,14 @@ export function SiblingsSection() {
       <div className="container-x relative z-10">
         <InkStatement
           tokens={[
-            "Three",
-            "siblings,",
-            { spot: "compass", w: "w-[0.9em]" },
-            "one",
-            "half",
-            "of",
-            "a",
-            "strange",
-            "map,",
-            { spot: "gear", w: "w-[1.3em]" },
-            "and",
-            "a",
-            "world",
-            "where",
-            "the",
-            "machines",
-            "have",
-            "failed",
-            "and",
-            "the",
-            "blank",
-            "spaces",
-            "on",
-            "the",
-            "map",
-            "have",
-            "come",
-            "back.",
+            "Computers", "have", "failed,", { spot: "gear", w: "w-[1.3em]" },
+            "electricity", "is", "extinct,", { spot: "compass", w: "w-[.9em]" },
+            "and", "the", "race", "to", "discover", "new", "lands", "is", "underway!",
             { spot: "airship", w: "w-[2.4em]" },
-            "Somewhere",
-            "out",
-            "there,",
-            "their",
-            "father's",
-            "trail",
-            "is",
-            "waiting.",
-            { spot: "field-glasses", w: "w-[1.1em]" },
           ]}
         />
 
-        <p className="mt-12 text-center font-hand text-4xl text-rust">K · M.K. · Z</p>
+        <p className="mt-8 text-center text-sm text-ink-2">From <a href="https://www.sarahstewarttaylor.com/expeditioners" className="underline underline-offset-4" target="_blank" rel="noopener">S. S. Taylor’s introduction to The Expeditioners ↗</a></p>
       </div>
 
     </section>
@@ -82,7 +48,6 @@ export function RecognitionSection() {
               Selected by librarians.<br />Celebrated by critics.
             </h2>
             <HonourStamps honours={recognition} layout="gallery" className="mt-12" />
-            <p className="label mt-4 text-ink-3">All for Book One, The Treasure of Drowned Man&rsquo;s Canyon.</p>
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
             <ul className="space-y-10">
@@ -204,7 +169,6 @@ export function FinalCta() {
           />
         </div>
         <div className="md:col-span-7 md:col-start-6">
-          <p className="label text-cream/60">Begin at the beginning</p>
           <h2 id="final-title" className="mt-4 font-serif text-[clamp(2.4rem,5vw,4.6rem)] font-light leading-[1.02] tracking-[-0.015em]">
             The expedition starts with Book One.
           </h2>

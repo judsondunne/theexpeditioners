@@ -1,20 +1,16 @@
 import Link from "next/link";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { NewsletterSignup } from "@/components/layout/NewsletterSignup";
 import { Engraving } from "@/components/ui/Engraving";
 import { books, bookPath, ordinal } from "@/content/books";
 import type { SpotName } from "@/content/engravings";
 import { site } from "@/content/site";
 
-const lineup: { name: SpotName; w: string; flip?: boolean }[] = [
-  { name: "surveyor", w: "w-[2.6rem]" },
-  { name: "hiker", w: "w-[2.4rem]" },
-  { name: "penny-farthing", w: "w-[3.1rem]" },
-  { name: "heliograph", w: "w-[2.6rem]" },
-  { name: "diver", w: "w-[2.1rem]" },
-  { name: "writer", w: "w-[3.6rem]" },
-  { name: "surveyor-2", w: "w-[2.6rem]", flip: true },
-  { name: "lantern", w: "w-[1.1rem]" },
-  { name: "theodolite", w: "w-[1.9rem]" },
+const lineup: { name: SpotName; w: string }[] = [
+  { name: "compass", w: "w-[3.5rem] sm:w-[4.5rem]" },
+  { name: "gear", w: "w-[4rem] sm:w-[5.5rem]" },
+  { name: "airship", w: "w-[6rem] sm:w-[8rem]" },
+  { name: "field-glasses", w: "w-[3.5rem] sm:w-[4.5rem]" },
 ];
 
 export function SiteFooter() {
@@ -24,12 +20,11 @@ export function SiteFooter() {
       {/* the expedition, lined up on the baseline */}
       <div aria-hidden="true" className="container-x relative z-10 overflow-hidden">
         <div className="flex items-end justify-center gap-[clamp(0.8rem,3.2vw,2.8rem)] pt-16 text-ink/80">
-          {lineup.map((f, i) => (
+          {lineup.map((f) => (
             <Engraving
               key={f.name}
               name={f.name}
-              flip={f.flip}
-              className={`${f.w} shrink-0 ${i > 5 ? "hidden sm:block" : ""} ${i === 3 || i === 8 ? "hidden md:block" : ""}`}
+              className={`${f.w} shrink-0`}
             />
           ))}
         </div>
@@ -39,9 +34,7 @@ export function SiteFooter() {
 
       <div className="container-x relative z-10 grid gap-12 pb-10 pt-14 md:grid-cols-12">
         <div className="md:col-span-5">
-          <Link href="/" className="display text-[2.6rem] leading-none">
-            The Expeditioners
-          </Link>
+          <Link href="/" className="block max-w-[24rem]" aria-label="The Expeditioners — home"><Wordmark className="w-full" /></Link>
           <p className="mt-4 max-w-sm font-serif text-[1.15rem] italic leading-snug text-ink-2">{site.tagline}</p>
           <p className="label mt-5 text-ink-2">
             By S. S. Taylor · Illustrated by Katherine Roy
@@ -85,7 +78,7 @@ export function SiteFooter() {
                 </a>
               </li>
               <li><Link className="hover:text-rust" href="/privacy">Privacy</Link></li>
-              <li><Link className="hover:text-rust" href="/about#credits">Image credits</Link></li>
+              <li><Link className="hover:text-rust" href="/credits">Image credits</Link></li>
             </ul>
           </div>
         </nav>

@@ -227,10 +227,10 @@ function PinnedStory({ bookHref, cover }: Props) {
           </div>
           <div aria-hidden="true" className="opening-text-shade" />
           <div className="opening-copy">
-            <p className="label text-cream/65">A different history</p>
+
             <h2><Words text="In 1880, the world" from={0} to={.12} /><br /><Words text="built its first computers." from={.12} to={.28} /></h2>
             <p className="opening-century"><Words text="One hundred years later." from={.3} to={.46} /></p>
-            <p className="opening-failure" style={{ opacity: "var(--fail)", transform: "translateY(calc((1 - var(--fail)) * 18px))" }}>And then<br /><em>they failed.</em></p>
+            <p className="opening-failure" style={{ opacity: "var(--fail)", transform: "translateY(calc((1 - var(--fail)) * 18px))" }}>And then<br /><span>they failed.</span></p>
           </div>
         </div>
 
@@ -268,16 +268,12 @@ function PinnedStory({ bookHref, cover }: Props) {
           <StoryText beat={1} />
         </div>
 
-        {/* 3 — a newspaper from the Realm */}
+        {/* 3 — Katherine Roy’s original clockwork-hand illustration */}
         <div data-panel="2" style={panelStyle} className="absolute inset-0">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-            <Engraving name="gear" className="absolute -left-[6%] top-[4%] w-[min(42vw,30rem)] text-cream/10" style={{ transform: "rotate(calc(var(--lp) * 90deg))" }} />
-            <Engraving name="compass" className="absolute bottom-[8%] left-[32%] hidden w-40 text-cream/15 md:block" style={{ transform: "rotate(calc(-12deg + var(--lp) * 24deg))" }} />
+          <div className="story-book-illustration" style={{ opacity: "var(--paper)", transform: "translateY(calc((1 - var(--paper)) * 24px))" }}>
+            <ClockworkIllustration />
           </div>
-          <div className="story-newspaper-sheet" style={{ opacity: "var(--paper)", transform: "translateY(calc(-50% + (1 - var(--paper)) * 28px)) rotate(calc(-1.5deg + var(--lp) * 2deg))" }}>
-            <StoryNewspaper />
-          </div>
-          <StoryText beat={2} newspaper />
+          <StoryText beat={2} illustration />
         </div>
 
         {/* 4 — the canyon */}
@@ -289,37 +285,18 @@ function PinnedStory({ bookHref, cover }: Props) {
               style={{ left: "calc(8% + var(--lp) * 40%)" }}
             />
             <div className="absolute right-[7%] top-[9%] w-[min(30vw,25rem)] max-md:left-1/2 max-md:right-auto max-md:top-[6%] max-md:w-[58vw] max-md:-translate-x-1/2">
-              <div className="border border-cream/25 bg-[#e9dfca] p-1.5">
+              <div className="overflow-hidden bg-[#e9dfca]">
                 <div className="relative overflow-hidden">
                   <Image
-                    src="/images/engravings/moran-grand-canon.webp"
+                    src="/images/art/canyon-framed.webp"
                     alt=""
-                    width={plates["moran-grand-canon"].w}
-                    height={plates["moran-grand-canon"].h}
+                    width={900}
+                    height={1300}
                     sizes="(min-width: 768px) 25rem, 58vw"
                     className="h-auto w-full mix-blend-multiply"
                     style={{ transform: "scale(calc(1.03 + var(--lp) * 0.08))" }}
                   />
-                  <svg viewBox="0 0 100 147" className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
-                    <path
-                      d="M8 6 C 30 20, 18 40, 40 52 S 70 70, 52 92 S 40 120, 62 132"
-                      fill="none"
-                      stroke="#a33c26"
-                      strokeWidth="2"
-                      strokeDasharray="2.6 2.4"
-                      pathLength={100}
-                      style={{ strokeDashoffset: "calc(100 - var(--route) * 100)" }}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    <g
-                      style={{ opacity: "clamp(0, calc((var(--route) - 0.92) * 14), 1)" }}
-                      stroke="#a33c26"
-                      strokeWidth="1.6"
-                    >
-                      <line x1="58" y1="128" x2="66" y2="136" />
-                      <line x1="66" y1="128" x2="58" y2="136" />
-                    </g>
-                  </svg>
+
                 </div>
               </div>
             </div>
@@ -334,7 +311,7 @@ function PinnedStory({ bookHref, cover }: Props) {
           </div>
           <div className="container-x relative flex h-full flex-col items-center justify-center gap-10 pb-10 pt-20 text-center md:flex-row md:justify-between md:gap-16 md:text-left">
             <div className="max-w-[44rem]">
-              <p className="label text-cream/60">{storyQuestion.kicker}</p>
+
               <h2 className="mt-5 font-serif text-[clamp(2.3rem,5.6vw,5.2rem)] font-light leading-[1.02] tracking-[-0.015em] text-balance">
                 <Words text={storyQuestion.text} from={0} to={0.3} />
               </h2>
@@ -381,43 +358,25 @@ function PinnedStory({ bookHref, cover }: Props) {
   );
 }
 
-/** Real type and a period engraving, rather than generated newspaper lettering. */
-function StoryNewspaper() {
-  return (
-    <article className="realm-newspaper paper-grain" aria-label="An imagined newspaper from the world of the story">
-      <header>
-        <p className="realm-newspaper-masthead">The Realm Gazette</p>
-        <p className="realm-newspaper-edition">Exploration · Reports from the Realm</p>
-      </header>
-      <h3>Alexander West<br />Presumed Dead</h3>
-      <p className="realm-newspaper-deck">Famed Explorer of the Realm missing in the Fazian rainforest</p>
-      <div className="realm-newspaper-columns">
-        <div className="realm-newspaper-engraving" aria-hidden="true"><Engraving name="surveyor" className="h-full w-full text-[#302820]" /></div>
-        <div>
-          <p>Alexander West, famed Explorer of the Realm, is presumed dead in the Fazian rainforest.</p>
-          <p>His son Kit is about to discover that his father&rsquo;s story is far from over.</p>
-        </div>
-      </div>
-      <p className="realm-newspaper-foot">The West Papers</p>
-    </article>
-  );
+/** Katherine Roy’s published interior drawing, from her original process post. */
+function ClockworkIllustration() {
+  return <figure className="clockwork-illustration">
+    <Image src="/images/art/book1-interior-explorer-and-kit.webp" alt="Katherine Roy’s illustration of Kit and the man with a clockwork hand" width={500} height={682} sizes="(min-width: 768px) 30rem, 75vw" className="h-auto w-full" />
+    <figcaption>Illustration by Katherine Roy</figcaption>
+  </figure>;
 }
 
 /** The narration for a beat: kicker plus lines that ink in word by word. */
-function StoryText({ beat, big = false, newspaper = false }: { beat: number; big?: boolean; newspaper?: boolean }) {
+function StoryText({ beat, big = false, illustration = false }: { beat: number; big?: boolean; illustration?: boolean }) {
   const b = beats[beat];
   const n = b.lines.length;
   return (
-    <div className={cn("container-x pointer-events-none absolute inset-x-0 bottom-[9vh] z-10 max-md:bottom-[7vh]", newspaper && "story-newspaper-copy")}>
+    <div className={cn("container-x pointer-events-none absolute inset-x-0 bottom-[9vh] z-10 max-md:bottom-[7vh]", illustration && "story-illustration-copy")}>
       <div
         aria-hidden="true"
         className="absolute -inset-x-0 -bottom-[9vh] top-[-6vh] -z-10 bg-[linear-gradient(to_top,rgba(21,17,14,0.92),rgba(21,17,14,0.6)_55%,transparent)] md:right-[35%] md:bg-[radial-gradient(ellipse_at_10%_80%,rgba(21,17,14,0.9),rgba(21,17,14,0.55)_50%,transparent_75%)]"
       />
-      <div className={newspaper ? "max-w-[min(40rem,92vw)] md:max-w-[43%]" : "max-w-[min(40rem,92vw)] md:max-w-[38rem] lg:max-w-[44rem]"}>
-        <p className="label flex items-center gap-3 text-cream/60">
-          <span className="inline-block h-px w-6 bg-current" aria-hidden="true" />
-          {b.kicker}
-        </p>
+      <div className={illustration ? "max-w-[min(40rem,92vw)] md:max-w-[43%]" : "max-w-[min(40rem,92vw)] md:max-w-[38rem] lg:max-w-[44rem]"}>
         <div className="mt-5 space-y-3">
           {b.lines.map((line, j) => (
             <p
@@ -463,13 +422,14 @@ function Words({ text, from, to }: { text: string; from: number; to: number }) {
 /** A compass-needle progress rail on the right edge: N at the top, S at the foot. */
 function ProgressRail() {
   return (
-    <div aria-hidden="true" className="absolute bottom-[12vh] right-[var(--gutter)] top-[12vh] z-20 hidden w-4 flex-col items-center md:flex">
+    <div aria-hidden="true" className="story-progress-rail absolute bottom-[12vh] right-[var(--gutter)] top-[12vh] z-20 hidden w-4 flex-col items-center md:flex">
       <span className="label text-cream/60">N</span>
       <div className="relative my-3 w-px flex-1 bg-cream/20">
         <div
           className="absolute inset-x-0 top-0 origin-top bg-signal shadow-[0_0_10px_rgba(57,198,214,0.6)]"
           style={{ height: "100%", transform: "scaleY(var(--p, 0))" }}
         />
+        <span className="story-rail-airship" style={{ top: "calc(var(--p, 0) * 100%)" }}><Engraving name="airship" className="w-full text-cream" /></span>
         {Array.from({ length: PANELS - 1 }, (_, i) => (
           <span key={i} className="absolute -left-1 h-px w-2.5 bg-cream/40" style={{ top: `${((i + 1) / PANELS) * 100}%` }} />
         ))}
@@ -485,21 +445,18 @@ function StackedStory({ bookHref, cover }: Props) {
   return (
     <section id="the-premise" aria-label="The story so far" className="on-night relative bg-night py-24 text-cream md:py-32">
       <div className="container-x">
-        <p className="label text-cream/60">The story so far</p>
+
         <ol className="mt-12 space-y-20">
-          {beats.map((b, i) => (
+          {beats.map((b) => (
             <li key={b.id} className="grid gap-8 md:grid-cols-12 md:items-center">
               <div className="md:col-span-7">
-                <p className="label text-cream/60">
-                  {String(i + 1).padStart(2, "0")} — {b.kicker}
-                </p>
                 {b.lines.map((l, j) => (
                   <p key={j} className="mt-4 font-serif text-[clamp(1.6rem,3.2vw,2.8rem)] font-light leading-[1.1]">
                     {l}
                   </p>
                 ))}
               </div>
-              {b.id === "dispatch" && <div className="md:col-span-5"><StoryNewspaper /></div>}
+              {b.id === "dispatch" && <div className="md:col-span-5"><ClockworkIllustration /></div>}
             </li>
           ))}
         </ol>

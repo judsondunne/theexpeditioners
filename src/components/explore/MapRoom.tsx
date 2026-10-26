@@ -46,13 +46,14 @@ export function MapRoom({ compact = false, ...props }: Props) {
 
   return (
     <div className={`canyon-room ${compact ? "canyon-room--compact" : ""}`}>
-      <div className="canyon-toolbar">
+      {!compact && <div className="canyon-toolbar">
         <div className="flex items-center gap-3"><span aria-hidden="true" className="canyon-status-light" /><span className="label">Drowned Man&rsquo;s Canyon</span></div>
         <div className="flex gap-1" role="group" aria-label="Map display">
           <button type="button" aria-pressed={mode === "relief"} onClick={() => { if (mode !== "relief") { setMode("relief");setStatus("loading");setSelected(null); } }} className="canyon-mode">3D relief</button>
           <button type="button" aria-pressed={mode === "paper"} onClick={() => setMode("paper")} className="canyon-mode">Original map</button>
         </div>
       </div>
+      }
       {mode === "paper" || status === "failed" ? (
         <div className="bg-[#21151a] p-3 md:p-6">
           {status === "failed" && <p role="status" className="mb-4 text-cream/75">The 3D view is unavailable on this device. Explore the original map below.</p>}
@@ -72,7 +73,7 @@ export function MapRoom({ compact = false, ...props }: Props) {
               <button type="button" disabled={status !== "ready"} onClick={() => {handle.current?.reset();setSelected(null);}} aria-label="Reset canyon view">↺</button>
               <button type="button" disabled={status !== "ready"} onClick={() => handle.current?.top()} aria-label="View canyon from above">⌑</button>
             </div>
-            <p className="canyon-gesture label">Drag to look around · select a location</p>
+            <p className="canyon-gesture label">Drag to look around · scroll or pinch to zoom</p>
           </div>
           {!compact && <aside className="canyon-index" aria-label="Canyon locations">
             <p className="label text-[#bd9367] mb-5">Ten places to discover</p>
@@ -81,7 +82,7 @@ export function MapRoom({ compact = false, ...props }: Props) {
           </aside>}
         </div>
       )}
-      <div className="canyon-caption"><p>{credit}</p>{!compact && <p aria-live="polite">{selected !== null ? places[selected].name : "Follow the water. Find your bearings."}</p>}</div>
+      {!compact && <div className="canyon-caption"><p>{credit}</p><p aria-live="polite">{selected !== null ? places[selected].name : "Follow the water. Find your bearings."}</p></div>}
     </div>
   );
 }

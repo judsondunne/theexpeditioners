@@ -1,4 +1,4 @@
-import { IBM_Plex_Mono, League_Gothic, Newsreader, Reenie_Beanie } from "next/font/google";
+import { IBM_Plex_Mono, League_Gothic, Libre_Caslon_Text, Reenie_Beanie } from "next/font/google";
 
 /** Display: a 1903 American wood-type gothic — period-right for an expedition broadside. */
 export const league = League_Gothic({
@@ -7,16 +7,16 @@ export const league = League_Gothic({
   display: "swap",
 });
 
-/** Text and editorial statements: a variable serif with optical sizes and true italics. */
-export const newsreader = Newsreader({
+/** Paperback-style serif, matched to the cover subtitle and author line. */
+export const newsreader = Libre_Caslon_Text({
   subsets: ["latin"],
   variable: "--font-newsreader",
   style: ["normal", "italic"],
-  axes: ["opsz"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
-/** Technical labels, navigation, coordinates. */
+/** Retained font asset for existing printable and social-card artwork. */
 export const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--font-plex-mono",

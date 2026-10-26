@@ -166,8 +166,7 @@ export const articles: Article[] = [
     body: () => (
       <>
         <p>
-          Every expedition begins with a map, and so did this one. S. S. Taylor (the name Sarah Stewart Taylor uses for
-          The Expeditioners) has loved maps since she was ten years old, when she noticed a mistake on a map of her own
+          Every expedition begins with a map, and so did this one. Sarah Stewart Taylor has loved maps since she was ten years old, when she noticed a mistake on a map of her own
           neighborhood. A map, she discovered, could be wrong.
         </p>
         <h2>A world that took a different turn</h2>

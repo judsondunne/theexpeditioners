@@ -146,7 +146,7 @@ export interface Book {
   /** Full title as printed. */
   fullTitle: string;
   /** One-sentence original hook for cards and the shelf. */
-  hook: { text: string; status: ContentStatus };
+  hook: { text: string; status: ContentStatus; source?: SourceRef };
   /** Synopsis paragraphs. Written for this site from the verified jacket facts. */
   synopsis: { paragraphs: string[]; status: ContentStatus; basedOn: SourceRef[] };
   /** Verified places, inventions and people named in official copy for this book. */

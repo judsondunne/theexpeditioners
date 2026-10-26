@@ -46,7 +46,7 @@ export const reviews: ReviewExcerpt[] = [
   {
     id: "sf-chronicle-series",
     outlet: "San Francisco Chronicle",
-    quote: "Beautifully written and nail-bitingly thrilling…",
+    quote: "Beautifully written and nail-bitingly thrilling, this is an easy series to get hooked on.",
     year: 2012,
     url: "https://www.sfgate.com/books/article/Books-for-the-younger-reader-Dec-30-4152997.php",
     status: "verified",
@@ -145,4 +145,4 @@ export function review(id: string): ReviewExcerpt {
 }
 
 /** The three quotes that rotate in the homepage hero. */
-export const heroQuotes = [review("kirkus-book-one"), review("slj-book-one"), review("sf-chronicle-series")];
+export const heroQuotes = [review("sf-chronicle-series"), review("boingboing-book-one"), review("kirkus-book-two")];

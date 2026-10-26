@@ -582,3 +582,52 @@ a {
 .cipher-key li { display: flex; gap: 1rem; padding-block: .3rem; margin: 0 !important; }.cipher-key li > span:first-child { width: 1.3rem; flex-shrink: 0; padding-top: .4rem; }
 .buy-card-heading { display: flex; align-items: center; gap: 1.25rem; min-height: 9rem; }
 @media(max-width:380px) { .buy-card-heading { gap: .9rem; }.buy-card-heading h2 { font-size: 1.4rem; }.buy-card-heading > a { width: 4rem; } }
+
+/* Original cover identity and the quieter paperback serif. */
+.series-wordmark { display: block; aspect-ratio: 800 / 285; background: currentColor; mask: url('/images/brand/expeditioners-lettering.svg') center / contain no-repeat; }
+@theme { --font-mono: var(--font-newsreader), Georgia, serif; }
+.label, .label-lg { letter-spacing: .045em; }
+#the-premise .opening-failure { font-family: var(--font-display); text-transform: uppercase; letter-spacing: -.015em; }
+#the-premise .opening-failure span { color: #efe6d4; font-style: normal; }
+#the-premise .opening-year { color: #d2b08612; -webkit-text-stroke: 1.5px #d2b086bf; text-shadow: none; opacity: 1; }
+.story-rail-airship { position: absolute; left: 50%; width: 4.7rem; transform: translate(-50%, -50%) rotate(32deg); filter: drop-shadow(0 2px 3px #15110e); }
+.story-book-illustration { position: absolute; top: 9%; right: 12%; width: min(34vw, 26rem); }
+.clockwork-illustration { background: #f4f0e8; padding: 0; color: #4b4136; }
+.clockwork-illustration img { mix-blend-mode: multiply; }
+.clockwork-illustration figcaption { padding: .6rem 1rem; font-size: .7rem; text-align: right; }
+.story-illustration-copy { bottom: 16vh; }
+.review-carousel { position: relative; padding: 1.5rem 1.5rem 1rem; background: #352026; color: #efe6d4; }
+.review-carousel-mark { display: block; font-size: 5rem; line-height: .7; color: #d7b789; }
+.review-carousel-slides { display: grid; margin-top: .8rem; }
+.review-carousel-slide { grid-area: 1 / 1; opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .65s ease, transform .85s cubic-bezier(.16,1,.3,1); }
+.review-carousel-slide[data-active="true"] { opacity: 1; transform: translateY(0); pointer-events: auto; transition-delay: .22s; }
+.review-carousel-slide p { font-size: clamp(1.15rem,1.6vw,1.5rem); line-height: 1.4; }
+.review-carousel-slide footer { margin-top: 1.3rem; font-size: .8rem; line-height: 1.4; }
+.review-carousel-slide footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.review-carousel-pagination { display: flex; gap: .5rem; margin-top: 1.4rem; }
+.review-carousel-pagination button { min-width: 40px; min-height: 36px; display: grid; align-items: center; }
+.review-carousel-pagination span { display: block; height: 3px; background: #efe6d440; transition: background .5s; }
+.review-carousel-pagination [aria-pressed="true"] span { background: #d7b789; }
+@media (max-width: 767px) {
+  .story-book-illustration { top: 8%; right: 18%; width: min(64vw, 20rem); max-height: 56%; overflow: hidden; }
+  .story-illustration-copy { bottom: 7vh; }
+  .review-carousel { padding: 1.5rem; }
+  .review-carousel-slide p { font-size: 1.4rem; }
+  .series-wordmark { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .review-carousel-slide { transition: none; transform: none; }
+}
+.bibliography { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem 4rem; }
+.bibliography li { font-size: 1rem; line-height: 1.65; max-width: 34rem; }
+@media(max-width: 640px) { .bibliography { grid-template-columns: 1fr; gap: 2.5rem; } }
+.award-art { display: block; flex-shrink: 0; width: 5rem; height: 4.5rem; mix-blend-mode: multiply; }
+.award-list { display: grid; gap: 1.15rem; }
+.award-link { display: flex; align-items: center; gap: 1rem; }
+.award-link:hover .award-description > span:first-child { text-decoration: underline; text-underline-offset: 4px; }
+.award-description { display: block; font-size: .85rem; line-height: 1.35; }
+.award-status { display: block; color: var(--color-ink-2); font-size: .72rem; margin-top: .35rem; }
+.award-gallery { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1.5rem; max-width: 38rem; }
+.award-gallery .award-link { flex-direction: column; text-align: center; gap: 1.25rem; }
+.award-gallery .award-art { width: 100%; height: 7rem; max-width: 9rem; }
+@media(max-width: 480px) { .award-gallery { gap: 1rem; }.award-gallery .award-art { height: 5.5rem; }.award-gallery .award-description { font-size: .78rem; } }

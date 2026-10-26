@@ -45,8 +45,9 @@ export const books: Book[] = [
     title: "The Treasure of Drowned Man's Canyon",
     fullTitle: "The Expeditioners and the Treasure of Drowned Man's Canyon",
     hook: {
-      text: "Half of a strange map, a man with a clockwork hand, and government agents on their trail: the West siblings set out for a remote canyon in the Arizona desert.",
-      status: "original-copy",
+      text: "Why are so many government agents trying to steal the half-map? (And where is the other half?)",
+      status: "verified",
+      source: { label: "S. S. Taylor’s official book description", url: "https://www.sarahstewarttaylor.com/expeditioners" },
     },
     synopsis: {
       paragraphs: [
@@ -169,8 +170,9 @@ export const books: Book[] = [
     title: "The Secret of King Triton's Lair",
     fullTitle: "The Expeditioners and the Secret of King Triton's Lair",
     hook: {
-      text: "A new map from their father, two world powers on the brink of war, and a hidden Caribbean island known for its deadly storms.",
-      status: "original-copy",
+      text: "Why did Alexander leave the maps behind, and why are government agents so determined to seize them?",
+      status: "verified",
+      source: { label: "S. S. Taylor’s official book description", url: "https://www.sarahstewarttaylor.com/expeditioners" },
     },
     synopsis: {
       paragraphs: [
@@ -279,8 +281,9 @@ export const books: Book[] = [
     title: "The Lost City of Maps",
     fullTitle: "The Expeditioners and the Lost City of Maps",
     hook: {
-      text: "Kit's first secret mission: cross the Simerian Desert, bring back a map that could stop an invasion, and look for a city known only in legend.",
-      status: "original-copy",
+      text: "Will Kit have what it takes to find the map and a secret desert city known only in legend?",
+      status: "verified",
+      source: { label: "S. S. Taylor’s official book description", url: "https://www.sarahstewarttaylor.com/expeditioners" },
     },
     synopsis: {
       paragraphs: [

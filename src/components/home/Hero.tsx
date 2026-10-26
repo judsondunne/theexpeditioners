@@ -1,3 +1,4 @@
+import { Wordmark } from "@/components/ui/Wordmark";
 import { HeroBook } from "@/components/home/HeroBook";
 import { QuoteRotator } from "@/components/home/QuoteRotator";
 import { BuyBook } from "@/components/purchase/BuyBook";
@@ -27,7 +28,6 @@ export function Hero() {
         <picture>
           <source media="(max-width: 767px)" srcSet="/images/optimized/hero-map-640.webp 640w, /images/optimized/hero-map-960.webp 960w" sizes="100vw" />
           {/* Precompressed art avoids request-time encoding on the first visit. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/optimized/hero-map-1440.webp" srcSet="/images/optimized/hero-map-960.webp 960w, /images/optimized/hero-map-1440.webp 1440w, /images/optimized/hero-map-1920.webp 1920w" sizes="100vw" alt="" width={1920} height={1313} loading="eager" fetchPriority="high" decoding="async" className="absolute inset-0 h-full w-full object-cover object-[50%_40%] opacity-[0.62] mix-blend-multiply" />
         </picture>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_32%_48%,rgba(236,227,209,0.92)_0%,rgba(236,227,209,0.55)_38%,rgba(236,227,209,0)_70%)]" />
@@ -76,17 +76,13 @@ export function Hero() {
             An illustrated adventure trilogy
           </p>
           <h1 id="hero-title" className="mt-5">
-            <span className="block font-serif text-[clamp(1.6rem,3vw,2.4rem)] italic leading-none text-ink-2">
-              The
-            </span>
-            <span className="display block text-[clamp(3.4rem,17.5vw,6.5rem)] lg:text-[clamp(3.9rem,6.6vw,7.5rem)]">
-              Expeditioners
-            </span>
+            <span className="sr-only">The Expeditioners</span>
+            <Wordmark className="w-full max-w-[35rem]" />
           </h1>
           <p className="mt-6 max-w-[26rem] font-serif text-[clamp(1.35rem,2.1vw,1.8rem)] leading-[1.18] text-ink text-balance">
             {site.tagline}
           </p>
-          <p className="label-lg mt-5 text-ink-2">
+          <p className="mt-5 text-lg leading-relaxed text-ink-2">
             By S. S. Taylor <span aria-hidden="true">·</span> Illustrated by Katherine Roy
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
