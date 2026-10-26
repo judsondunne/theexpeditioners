@@ -184,3 +184,14 @@ test("creator books lift on focus and stay still with reduced motion", async ({ 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(book.locator(".creator-book")).toHaveCSS("transform", "none");
 });
+
+
+test("all nine footer engravings fit at phone, tablet and desktop widths", async ({ page }) => {
+  await page.goto("/");
+  for (const width of [390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const icons = await page.locator(".footer-engraving-lineup > span").evaluateAll(nodes => nodes.map(node => { const r = node.getBoundingClientRect(); return {left: r.left, right: r.right, width: r.width}; }));
+    expect(icons).toHaveLength(9);
+    for (const icon of icons) { expect(icon.left).toBeGreaterThanOrEqual(0); expect(icon.right).toBeLessThanOrEqual(width); expect(icon.width).toBeGreaterThan(20); }
+  }
+});

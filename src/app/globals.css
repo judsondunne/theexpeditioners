@@ -623,8 +623,9 @@ a {
 .award-art--indie-next { color: #716244; }
 .hero-praise .award-list { gap: .7rem; }
 .story-rail-airship { transform: translate(-50%, -50%) rotate(90deg); }
-.footer-engraving-lineup { display: flex; align-items: flex-end; justify-content: space-between; gap: clamp(1rem,2.8vw,3rem); padding-top: 4rem; padding-bottom: .5rem; color: var(--color-ink-2); }
-@media(max-width: 767px) { .footer-engraving-lineup { flex-wrap: wrap; justify-content: center; gap: 1.5rem 1.8rem; }.footer-engraving-lineup > span { flex: 0 0 auto; } }
+.footer-engraving-lineup { display: grid; grid-template-columns: repeat(9,minmax(0,1fr)); align-items: end; justify-items: center; gap: clamp(.75rem,2vw,2rem); padding-top: 4rem; padding-bottom: .5rem; color: var(--color-ink-2); }
+.footer-engraving-lineup > span { max-width: 100%; }
+@media(max-width: 767px) { .footer-engraving-lineup { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1.5rem 1rem; } }
 .series-wordmark { aspect-ratio: 800 / 281; }
 .series-wordmark--compact { aspect-ratio: 800 / 249; mask-image: url('/images/brand/expeditioners-compact.svg'); }
 
